@@ -12,9 +12,6 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
 import meteordevelopment.meteorclient.mixininterface.IChatHud;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 
-/**
- * @author Tas [@0xTas] <root@0xTas.dev>
- **/
 public class MsgUtil {
     private final static Map<String, String> modulePrefixes = new HashMap<>();
 

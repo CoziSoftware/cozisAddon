@@ -6,7 +6,8 @@ import com.example.addon.modules.PortalMaker;
 import com.example.addon.modules.ChatToWeb;
 import com.example.addon.modules.DiscordNotifications;
 import com.example.addon.modules.SignASign;
-import com.example.addon.modules.SignHistorian;
+import com.example.addon.modules.StashFinderPlus;
+import com.example.addon.modules.SignHistory;
 import com.mojang.logging.LogUtils;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -31,7 +32,8 @@ public class AddonTemplate extends MeteorAddon {
          Modules.get().add(new ChatToWeb());
          Modules.get().add(new DiscordNotifications());
          Modules.get().add(new SignASign());
-         Modules.get().add(new SignHistorian());
+         Modules.get().add(new SignHistory());
+         Modules.get().add(new StashFinderPlus());
         // Commands
         Commands.add(new CommandExample());
 

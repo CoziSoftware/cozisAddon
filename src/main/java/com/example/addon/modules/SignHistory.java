@@ -55,7 +55,7 @@ import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.utils.render.RenderUtils;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
-import com.example.addon.mixin.accessor.AbstractSignEditScreenAccessor;
+import java.lang.reflect.Field;
 import meteordevelopment.meteorclient.events.game.OpenScreenEvent;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
@@ -66,9 +66,9 @@ import meteordevelopment.meteorclient.utils.render.WireframeEntityRenderer;
 import meteordevelopment.meteorclient.events.entity.player.InteractBlockEvent;
 import meteordevelopment.meteorclient.systems.modules.render.blockesp.ESPBlockData;
 
-public class SignHistorian extends Module {
-    public SignHistorian() {
-        super(AddonTemplate.CATEGORY, "SignHistorian", "Records & restores broken or modified signs.");
+public class SignHistory extends Module {
+    public SignHistory() {
+        super(AddonTemplate.CATEGORY, "Sign-History", "Records & restores broken or modified signs.");
     }
 
     private final String BLACKLIST_FILE = "meteor-client/sign-historian/content-blacklist.txt";
@@ -755,7 +755,14 @@ public class SignHistorian extends Module {
     @EventHandler
     private void onScreenOpened(OpenScreenEvent event) {
         if (!(event.screen instanceof AbstractSignEditScreen editScreen)) return;
-        SignBlockEntity sign = ((AbstractSignEditScreenAccessor) editScreen).getBlockEntity();
+        SignBlockEntity sign = null;
+        try {
+            Field beField = AbstractSignEditScreen.class.getDeclaredField("blockEntity");
+            beField.setAccessible(true);
+            Object value = beField.get(editScreen);
+            if (value instanceof SignBlockEntity) sign = (SignBlockEntity) value;
+        } catch (Exception ignored) { }
+        if (sign == null) return;
 
 
         SignText restoration = getRestoration(sign);

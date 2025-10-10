@@ -1,0 +1,12 @@
+{
+    "required": false,
+    "package": "com.example.addon.mixin.xaero",
+    "compatibilityLevel": "JAVA_21",
+    "client": [],
+    "injectors": {
+      "defaultRequire": 0
+    },
+    "mixins": [
+      "MinimapRendererMixin"
+    ]
+  }

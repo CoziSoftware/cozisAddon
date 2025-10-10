@@ -1,0 +1,33 @@
+{
+    "required": false,
+    "package": "com.example.addon.mixin.meteor",
+    "compatibilityLevel": "JAVA_21",
+    "client": [
+      "PeekScreenMixin",
+      "ModuleScreenMixin",
+      "ModulesScreenMixin"
+    ],
+    "injectors": {
+      "defaultRequire": 0
+    },
+    "mixins": [
+      "AutoLogMixin",
+      "FreecamMixin",
+      "WHeaderMixin",
+      "WWindowMixin",
+      "GuiThemeMixin",
+      "NametagsMixin",
+      "AutoMendMixin",
+      "NoRenderMixin",
+      "NotifierMixin",
+      "ExpThrowerMixin",
+      "TimerMixin",
+      "VelocityMixin",
+      "OnlinePlayersMixin",
+      "BetterTooltipsMixin",
+      "MeteorGuiThemeMixin",
+      "PacketCancellerMixin",
+      "accessor.SettingAccessor",
+      "accessor.CategoryAccessor"
+    ]
+  }

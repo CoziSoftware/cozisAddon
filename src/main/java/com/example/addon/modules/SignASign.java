@@ -39,12 +39,12 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.player.Rotations;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
-import com.example.addon.mixin.accessor.AbstractSignEditScreenAccessor;
 import meteordevelopment.meteorclient.events.game.OpenScreenEvent;
 import net.minecraft.client.gui.screen.ingame.AbstractSignEditScreen;
+import java.lang.reflect.Field;
 
 public class SignASign extends Module {
-    public SignASign() { super(AddonTemplate.CATEGORY, "SignASign", "Autofill signs with custom text."); }
+    public SignASign() { super(AddonTemplate.CATEGORY, "Sign-A-Sign", "Autofill signs with custom text."); }
 
     public static final String[] lineModes = {"Custom", "Empty", "File", "Username",
         "Username was here", "Timestamp", "Stardust", "Oasis", "Base64", "Hex", "0xHex", "ROT13", "Player UUID", "Random UUID", "Hashed UUID"};
@@ -926,11 +926,18 @@ public class SignASign extends Module {
     @EventHandler
     private void onScreenOpened(OpenScreenEvent event) {
         if (!(event.screen instanceof AbstractSignEditScreen editScreen)) return;
-        SignBlockEntity sign = ((AbstractSignEditScreenAccessor) editScreen).getBlockEntity();
+        SignBlockEntity sign = null;
+        try {
+            Field beField = AbstractSignEditScreen.class.getDeclaredField("blockEntity");
+            beField.setAccessible(true);
+            Object value = beField.get(editScreen);
+            if (value instanceof SignBlockEntity) sign = (SignBlockEntity) value;
+        } catch (Exception ignored) { }
+        if (sign == null) return;
 
         Modules mods = Modules.get();
         if (mods == null) return;
-        SignHistorian sh = mods.get(SignHistorian.class);
+        SignHistory sh = mods.get(SignHistory.class);
         if (sh.isActive() && sh.getRestoration(sign) != null) return;
 
         if (autoConfirm.get()) {

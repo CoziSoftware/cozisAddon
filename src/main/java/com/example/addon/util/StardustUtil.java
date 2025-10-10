@@ -28,9 +28,6 @@ import net.minecraft.network.packet.c2s.common.ClientOptionsC2SPacket;
 import meteordevelopment.meteorclient.systems.modules.misc.AutoReconnect;
 import meteordevelopment.meteorclient.mixin.ClientPlayNetworkHandlerAccessor;
 
-/**
- * @author Tas [@0xTas] <root@0xTas.dev>
- **/
 public class StardustUtil {
     public static final boolean XAERO_AVAILABLE = FabricLoader.getInstance().isModLoaded("xaeroworldmap")
         && FabricLoader.getInstance().isModLoaded("xaerominimap");
