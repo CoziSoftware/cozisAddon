@@ -5,6 +5,7 @@ import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.*;
+import meteordevelopment.meteorclient.systems.modules.Categories;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
@@ -24,7 +25,6 @@ import java.util.List;
 public class AutoPortal extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final List<BlockPos> waitingForBreak = new ArrayList<>();
-
 
     private final Setting<Integer> placeDelay = sgGeneral.add(new IntSetting.Builder()
         .name("place-delay")
@@ -73,7 +73,7 @@ public class AutoPortal extends Module {
     private int index = 0;
 
     public AutoPortal() {
-        super(AddonTemplate.CATEGORY, "auto-portal", "For the Base Hunter who has places to be.");
+        super(AddonTemplate.CATEGORY, "auto-portal", "Creates and automatically lights a nether portal.");
     }
 
     @Override
