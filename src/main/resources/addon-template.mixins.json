@@ -3,7 +3,10 @@
   "package": "com.example.addon.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "ExampleMixin"
+    "ExampleMixin",
+    "AbstractSignEditScreenMixin",
+    "accessor.AbstractSignEditScreenAccessor",
+    "accessor.ClientConnectionAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
