@@ -2,7 +2,7 @@ package com.example.addon;
 
 import com.example.addon.commands.CommandExample;
 import com.example.addon.hud.EntityList;
-import com.example.addon.modules.AutoPortal;
+import com.example.addon.modules.PortalMaker;
 import com.example.addon.modules.ChatToWeb;
 import com.example.addon.modules.DiscordNotifications;
 import com.mojang.logging.LogUtils;
@@ -25,7 +25,7 @@ public class AddonTemplate extends MeteorAddon {
         LOG.info("Initializing cozyClient");
 
         // Modules
-        Modules.get().add(new AutoPortal());
+        Modules.get().add(new PortalMaker());
          Modules.get().add(new ChatToWeb());
          Modules.get().add(new DiscordNotifications());
         // Commands

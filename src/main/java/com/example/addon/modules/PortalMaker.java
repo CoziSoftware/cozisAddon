@@ -22,7 +22,7 @@ import net.minecraft.util.math.Vec3d;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AutoPortal extends Module {
+public class PortalMaker extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final List<BlockPos> waitingForBreak = new ArrayList<>();
 
@@ -72,8 +72,8 @@ public class AutoPortal extends Module {
     private int delay = 0;
     private int index = 0;
 
-    public AutoPortal() {
-        super(AddonTemplate.CATEGORY, "auto-portal", "Creates and automatically lights a nether portal.");
+    public PortalMaker() {
+        super(AddonTemplate.CATEGORY, "portal-maker", "Creates and automatically lights a nether portal.");
     }
 
     @Override
