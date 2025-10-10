@@ -4,7 +4,7 @@ A 1.21.5 Meteor Client utility based addon.
 
 
 **Current Modules** 
-- ChatToWeb, DiscordNotifications, PortalMaker
+- ChatToWeb, DiscordNotifications, PortalMaker, SignASign, SignHistorian
 
 **Current HUD Modules**
 - EntityList
