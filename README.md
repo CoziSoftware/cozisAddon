@@ -14,3 +14,7 @@ A 1.21.5 Meteor Client utility based addon.
 
 **Current HUD Modules**
 - EntityList
+
+**Credits**
+- https://github.com/dekrom/BepHaxAddon
+- https://github.com/miles352/meteor-stashhunting-addon
