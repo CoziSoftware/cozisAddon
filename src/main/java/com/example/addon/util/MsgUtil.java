@@ -29,7 +29,7 @@ public class MsgUtil {
     }
 
     public static void initModulePrefixes() {
-        for (Module module : Modules.get().getGroup(Main.CATEGORY)) {
+        for (Module module : Modules.get().getGroup(Main.UTILS)) {
             String name = module.name;
             String color = StardustUtil.rCC();
             modulePrefixes.put(name, color);

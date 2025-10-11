@@ -44,7 +44,7 @@ import net.minecraft.client.gui.screen.ingame.AbstractSignEditScreen;
 import java.lang.reflect.Field;
 
 public class SignASign extends Module {
-    public SignASign() { super(Main.CATEGORY, "Sign-A-Sign", "Autofill signs with custom text."); }
+    public SignASign() { super(Main.UTILS, "Sign-A-Sign", "Autofill signs with custom text."); }
 
     public static final String[] lineModes = {"Custom", "Empty", "File", "Username",
         "Username was here", "Timestamp", "Stardust", "Oasis", "Base64", "Hex", "0xHex", "ROT13", "Player UUID", "Random UUID", "Hashed UUID"};

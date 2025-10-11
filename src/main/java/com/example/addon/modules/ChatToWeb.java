@@ -139,7 +139,7 @@ public class ChatToWeb extends Module {
     private String currentDimension = "Overworld";
 
     public ChatToWeb() {
-        super(Main.CATEGORY, "chat-to-web", "Displays Minecraft chat in a web browser.");
+        super(Main.UTILS, "chat-to-web", "Displays Minecraft chat in a web browser.");
     }
 
     @Override

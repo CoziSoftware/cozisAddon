@@ -59,7 +59,7 @@ public class Pitch40Util extends Module {
     );
 
     public Pitch40Util() {
-        super(Main.CATEGORY, "Pitch40Util", "Makes sure pitch 40 stays on when reconnecting to 2b2t, and sets your bounds as you reach highest point each climb.");
+        super(Main.MOVEMENT, "Pitch40Util", "Makes sure pitch 40 stays on when reconnecting to 2b2t, and sets your bounds as you reach highest point each climb.");
     }
 
     Module elytraFly = Modules.get().get(ElytraFly.class);

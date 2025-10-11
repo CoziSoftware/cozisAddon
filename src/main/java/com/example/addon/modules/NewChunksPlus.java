@@ -375,7 +375,7 @@ public class NewChunksPlus extends Module {
 			Paths.get("BlockExploitChunkData.txt")
 	));
 	public NewChunksPlus() {
-		super(Main.CATEGORY, "New-Chunks-Plus", "NewerNewChunks from TrouserStreak just with some improvements.");
+		super(Main.RENDER, "New-Chunks-Plus", "NewerNewChunks from TrouserStreak just with some improvements.");
 	}
 	
 	@SuppressWarnings("unchecked")

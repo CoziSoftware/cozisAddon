@@ -178,7 +178,7 @@ public class StashFinderPlus extends Module
 
     public StashFinderPlus()
     {
-        super(Main.CATEGORY, "stash-finder-plus", "Jefff mod's BetterStashFinder but with more features.");
+        super(Main.HUNTING, "stash-finder-plus", "Jefff mod's BetterStashFinder but with more features.");
     }
 
     private Vec3d lastPosition = null;

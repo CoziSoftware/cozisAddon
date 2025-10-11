@@ -10,6 +10,7 @@ import com.example.addon.modules.StashFinderPlus;
 import com.example.addon.modules.SignHistory;
 import com.example.addon.modules.Pitch40Util;
 import com.example.addon.modules.NewChunksPlus;
+import com.example.addon.modules.PearlOwner;
 import com.mojang.logging.LogUtils;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -22,8 +23,12 @@ import org.slf4j.Logger;
 
 public class Main extends MeteorAddon {
     public static final Logger LOG = LogUtils.getLogger();
-    public static final Category CATEGORY = new Category("cozisAddon");
+    public static final Category UTILS = new Category("cozisUtil");
+    public static final Category RENDER = new Category("cozisRender");
+    public static final Category MOVEMENT = new Category("cozisMovement");
+    public static final Category HUNTING = new Category("cozisHunting");
     public static final HudGroup HUD_GROUP = new HudGroup("cozisAddon");
+
 
     @Override
     public void onInitialize() {
@@ -38,6 +43,7 @@ public class Main extends MeteorAddon {
          Modules.get().add(new StashFinderPlus());
          Modules.get().add(new Pitch40Util());
          Modules.get().add(new NewChunksPlus());
+         Modules.get().add(new PearlOwner());
         // Commands
         Commands.add(new CommandExample());
 
@@ -47,7 +53,10 @@ public class Main extends MeteorAddon {
 
     @Override
     public void onRegisterCategories() {
-        Modules.registerCategory(CATEGORY);
+        Modules.registerCategory(UTILS);
+        Modules.registerCategory(RENDER);
+        Modules.registerCategory(MOVEMENT);
+        Modules.registerCategory(HUNTING);
     }
 
     @Override
