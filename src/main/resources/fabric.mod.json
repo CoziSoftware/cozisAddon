@@ -1,20 +1,20 @@
 {
   "schemaVersion": 1,
-  "id": "cozyclient",
+  "id": "cozisaddon",
   "version": "${version}",
-  "name": "cozyClient",
+  "name": "cozisaddon",
   "description": "An addon for Meteor Client 1.21.5.",
   "authors": [
     "cozidev"
   ],
   "contact": {
-    "sources": "https://github.com/CoziSoftware/cozyClient"
+    "sources": "https://github.com/CoziSoftware/cozisAddon"
   },
   "icon": "assets/template/icon.png",
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "com.example.addon.AddonTemplate"
+      "com.example.addon.Main"
     ]
   },
   "mixins": [

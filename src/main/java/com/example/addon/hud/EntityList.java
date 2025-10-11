@@ -1,6 +1,6 @@
 package com.example.addon.hud;
 
-import com.example.addon.AddonTemplate;
+import com.example.addon.Main;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.hud.HudElement;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public class EntityList extends HudElement {
-    public static final HudElementInfo<EntityList> INFO = new HudElementInfo<>(AddonTemplate.HUD_GROUP, "EntityList", "Displays nearby entities in a list.", EntityList::new);
+    public static final HudElementInfo<EntityList> INFO = new HudElementInfo<>(Main.HUD_GROUP, "EntityList", "Displays nearby entities in a list.", EntityList::new);
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 

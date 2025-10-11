@@ -5,7 +5,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Files;
 import net.minecraft.item.*;
-import com.example.addon.AddonTemplate;
+import com.example.addon.Main;
 import net.minecraft.block.*;
 import net.minecraft.text.Text;
 import java.util.stream.Stream;
@@ -68,7 +68,7 @@ import meteordevelopment.meteorclient.systems.modules.render.blockesp.ESPBlockDa
 
 public class SignHistory extends Module {
     public SignHistory() {
-        super(AddonTemplate.CATEGORY, "Sign-History", "Records & restores broken or modified signs.");
+        super(Main.CATEGORY, "Sign-History", "Records & restores broken or modified signs.");
     }
 
     private final String BLACKLIST_FILE = "meteor-client/sign-historian/content-blacklist.txt";

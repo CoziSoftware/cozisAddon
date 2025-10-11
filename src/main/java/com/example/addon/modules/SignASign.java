@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.nio.file.Files;
 import net.minecraft.item.*;
 import net.minecraft.text.*;
-import com.example.addon.AddonTemplate;
+import com.example.addon.Main;
 import java.util.stream.Stream;
 import net.minecraft.util.Hand;
 import com.example.addon.util.MsgUtil;
@@ -44,7 +44,7 @@ import net.minecraft.client.gui.screen.ingame.AbstractSignEditScreen;
 import java.lang.reflect.Field;
 
 public class SignASign extends Module {
-    public SignASign() { super(AddonTemplate.CATEGORY, "Sign-A-Sign", "Autofill signs with custom text."); }
+    public SignASign() { super(Main.CATEGORY, "Sign-A-Sign", "Autofill signs with custom text."); }
 
     public static final String[] lineModes = {"Custom", "Empty", "File", "Username",
         "Username was here", "Timestamp", "Stardust", "Oasis", "Base64", "Hex", "0xHex", "ROT13", "Player UUID", "Random UUID", "Hashed UUID"};

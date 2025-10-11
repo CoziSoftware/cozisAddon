@@ -1,7 +1,7 @@
 package com.example.addon.modules;
 
 import com.mojang.authlib.GameProfile;
-import com.example.addon.AddonTemplate;
+import com.example.addon.Main;
 import meteordevelopment.meteorclient.events.game.GameLeftEvent;
 import meteordevelopment.meteorclient.events.game.ReceiveMessageEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
@@ -28,7 +28,7 @@ public class DiscordNotifications extends Module {
 
     // Add constructor with category
     public DiscordNotifications() {
-        super(AddonTemplate.CATEGORY, "discord-notifications", "Sends notifications to a Discord webhook.");
+        super(Main.CATEGORY, "discord-notifications", "Sends notifications to a Discord webhook.");
     }
 
     private final Setting<String> webhookURL = sgGeneral.add(new StringSetting.Builder()

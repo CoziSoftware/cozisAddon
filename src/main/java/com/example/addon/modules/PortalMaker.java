@@ -1,6 +1,6 @@
 package com.example.addon.modules;
 
-import com.example.addon.AddonTemplate;
+import com.example.addon.Main;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -72,7 +72,7 @@ public class PortalMaker extends Module {
     private int index = 0;
 
     public PortalMaker() {
-        super(AddonTemplate.CATEGORY, "portal-maker", "Creates and automatically lights a nether portal.");
+        super(Main.CATEGORY, "portal-maker", "Creates and automatically lights a nether portal.");
     }
 
     @Override

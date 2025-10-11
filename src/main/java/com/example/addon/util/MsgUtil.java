@@ -2,7 +2,7 @@ package com.example.addon.util;
 
 import java.util.Map;
 import java.util.HashMap;
-import com.example.addon.AddonTemplate;
+import com.example.addon.Main;
 import net.minecraft.text.Text;
 import net.minecraft.text.Style;
 import net.minecraft.util.Formatting;
@@ -29,7 +29,7 @@ public class MsgUtil {
     }
 
     public static void initModulePrefixes() {
-        for (Module module : Modules.get().getGroup(AddonTemplate.CATEGORY)) {
+        for (Module module : Modules.get().getGroup(Main.CATEGORY)) {
             String name = module.name;
             String color = StardustUtil.rCC();
             modulePrefixes.put(name, color);

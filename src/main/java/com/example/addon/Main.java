@@ -20,14 +20,14 @@ import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import org.slf4j.Logger;
 
-public class AddonTemplate extends MeteorAddon {
+public class Main extends MeteorAddon {
     public static final Logger LOG = LogUtils.getLogger();
-    public static final Category CATEGORY = new Category("cozyClient");
-    public static final HudGroup HUD_GROUP = new HudGroup("cozyClient");
+    public static final Category CATEGORY = new Category("cozisAddon");
+    public static final HudGroup HUD_GROUP = new HudGroup("cozisAddon");
 
     @Override
     public void onInitialize() {
-        LOG.info("Initializing cozyClient");
+        LOG.info("Initializing cozisAddon");
 
         // Modules
         Modules.get().add(new PortalMaker());
@@ -57,6 +57,6 @@ public class AddonTemplate extends MeteorAddon {
 
     @Override
     public GithubRepo getRepo() {
-        return new GithubRepo("MeteorDevelopment", "meteor-addon-template");
+        return new GithubRepo("CoziSoftware", "cozisAddon");
     }
 }

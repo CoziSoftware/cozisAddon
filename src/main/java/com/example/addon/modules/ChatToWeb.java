@@ -1,6 +1,6 @@
 package com.example.addon.modules;
 
-import com.example.addon.AddonTemplate;
+import com.example.addon.Main;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -139,7 +139,7 @@ public class ChatToWeb extends Module {
     private String currentDimension = "Overworld";
 
     public ChatToWeb() {
-        super(AddonTemplate.CATEGORY, "chat-to-web", "Displays Minecraft chat in a web browser.");
+        super(Main.CATEGORY, "chat-to-web", "Displays Minecraft chat in a web browser.");
     }
 
     @Override

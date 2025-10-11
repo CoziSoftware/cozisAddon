@@ -1,6 +1,6 @@
 package com.example.addon.modules;
 
-import com.example.addon.AddonTemplate;
+import com.example.addon.Main;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -178,7 +178,7 @@ public class StashFinderPlus extends Module
 
     public StashFinderPlus()
     {
-        super(AddonTemplate.CATEGORY, "stash-finder-plus", "Jefff mod's BetterStashFinder but with more features.");
+        super(Main.CATEGORY, "stash-finder-plus", "Jefff mod's BetterStashFinder but with more features.");
     }
 
     private Vec3d lastPosition = null;

@@ -32,7 +32,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.chunk.*;
-import com.example.addon.AddonTemplate;
+import com.example.addon.Main;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -375,7 +375,7 @@ public class NewChunksPlus extends Module {
 			Paths.get("BlockExploitChunkData.txt")
 	));
 	public NewChunksPlus() {
-		super(AddonTemplate.CATEGORY, "New-Chunks-Plus", "NewerNewChunks from TrouserStreak just with some improvements.");
+		super(Main.CATEGORY, "New-Chunks-Plus", "NewerNewChunks from TrouserStreak just with some improvements.");
 	}
 	
 	@SuppressWarnings("unchecked")
