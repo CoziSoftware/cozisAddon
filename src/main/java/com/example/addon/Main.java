@@ -15,6 +15,7 @@ import com.example.addon.modules.PearlOwner;
 import com.example.addon.modules.searcharea.SearchArea;
 import com.example.addon.modules.TrailFollower;
 import com.example.addon.modules.DisconnectSound;
+import com.example.addon.modules.AntiSpam;
 import com.mojang.logging.LogUtils;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -50,6 +51,7 @@ public class Main extends MeteorAddon {
          Modules.get().add(new PearlOwner());
          Modules.get().add(new SearchArea());
          Modules.get().add(new DisconnectSound());
+         Modules.get().add(new AntiSpam());
 
          // Only add TrailFollower if Baritone is available
          try {
