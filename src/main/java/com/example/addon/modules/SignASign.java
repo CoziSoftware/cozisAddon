@@ -988,12 +988,6 @@ public class SignASign extends Module {
             }
         }
 
-        // Avoid depending on external WaxAura; only re-enable if present in this project.
-        Object waxAura = null;
-        if (!signsToColor.isEmpty() || !signsToGlowInk.isEmpty() || !signsToWax.isEmpty()) {
-            // If a WaxAura module exists in this project, it should be handled elsewhere.
-        }
-
         ++timer;
         if (timer >= 5) {
             timer = 0;

@@ -8,6 +8,8 @@ import com.example.addon.modules.DiscordNotifications;
 import com.example.addon.modules.SignASign;
 import com.example.addon.modules.StashFinderPlus;
 import com.example.addon.modules.SignHistory;
+import com.example.addon.modules.Pitch40Util;
+import com.example.addon.modules.NewChunksPlus;
 import com.mojang.logging.LogUtils;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -34,6 +36,8 @@ public class AddonTemplate extends MeteorAddon {
          Modules.get().add(new SignASign());
          Modules.get().add(new SignHistory());
          Modules.get().add(new StashFinderPlus());
+         Modules.get().add(new Pitch40Util());
+         Modules.get().add(new NewChunksPlus());
         // Commands
         Commands.add(new CommandExample());
 
