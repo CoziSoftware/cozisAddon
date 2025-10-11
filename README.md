@@ -4,7 +4,7 @@ A 1.21.5 Meteor Client utility based addon.
 
 
 **Current Utility Modules** 
-- ChatToWeb, DiscordNotifications, PortalMaker, SignASign, DisconnectSound
+- ChatToWeb, DiscordNotifications, PortalMaker, SignASign, DisconnectSound, AntiSpam
 
 **Current Rendering Modules**
 - SignHistory, StashFinderPlus, NewChunksPlus, PearlOwner
