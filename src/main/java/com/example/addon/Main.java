@@ -11,6 +11,8 @@ import com.example.addon.modules.SignHistory;
 import com.example.addon.modules.Pitch40Util;
 import com.example.addon.modules.NewChunksPlus;
 import com.example.addon.modules.PearlOwner;
+import com.example.addon.modules.searcharea.SearchArea;
+import com.example.addon.modules.TrailFollower;
 import com.mojang.logging.LogUtils;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -44,6 +46,17 @@ public class Main extends MeteorAddon {
          Modules.get().add(new Pitch40Util());
          Modules.get().add(new NewChunksPlus());
          Modules.get().add(new PearlOwner());
+         Modules.get().add(new SearchArea());
+         
+         // Only add TrailFollower if Baritone is available
+         try {
+             Class.forName("baritone.api.BaritoneAPI");
+             Modules.get().add(new TrailFollower());
+             LOG.info("TrailFollower loaded (Baritone detected)");
+         } catch (ClassNotFoundException e) {
+             LOG.info("TrailFollower not loaded (Baritone not found)");
+         }
+         
         // Commands
         Commands.add(new CommandExample());
 

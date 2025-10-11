@@ -10,7 +10,11 @@ A 1.21.5 Meteor Client utility based addon.
 - SignHistory, StashFinderPlus, NewChunksPlus
 
 **Current Movement Modules**
-- Pitch40Util
+- Pitch40Util, TrailFollower, SearchArea
 
 **Current HUD Modules**
 - EntityList
+
+**Credits**
+- https://github.com/dekrom/BepHaxAddon
+- https://github.com/miles352/meteor-stashhunting-addon

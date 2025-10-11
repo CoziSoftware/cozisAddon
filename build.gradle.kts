@@ -29,6 +29,10 @@ repositories {
         name = "Meteor Dev Snapshots"
         url = uri("https://maven.meteordev.org/snapshots")
     }
+    maven {
+        name = "JitPack"
+        url = uri("https://jitpack.io")
+    }
 }
 
 dependencies {
@@ -49,8 +53,8 @@ dependencies {
     // lenni
     modImplementation("net.lenni0451:LambdaEvents:2.4.2")
     modImplementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
-
-    modCompileOnly("meteordevelopment:baritone:${project.property("baritone_version")}")
+    // Baritone - compile only (users should install as a mod jar)
+    modCompileOnly("meteordevelopment:baritone:${properties["baritone_version"] as String}")
 }
 
 tasks.named<ProcessResources>("processResources") {

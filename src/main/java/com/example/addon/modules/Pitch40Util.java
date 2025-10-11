@@ -1,172 +1,156 @@
 package com.example.addon.modules;
 
 import com.example.addon.Main;
+import com.example.addon.util.Utils;
+
 import meteordevelopment.meteorclient.events.world.TickEvent;
-import meteordevelopment.meteorclient.settings.*;
+import meteordevelopment.meteorclient.settings.BoolSetting;
+import meteordevelopment.meteorclient.settings.IntSetting;
+import meteordevelopment.meteorclient.settings.Setting;
+import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Module;
-import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.movement.elytrafly.ElytraFly;
+import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.util.Hand;
-import meteordevelopment.meteorclient.systems.modules.movement.elytrafly.ElytraFlightModes;
-
-import static com.example.addon.util.Utils.firework;
-
+import net.minecraft.item.Items;
 
 public class Pitch40Util extends Module {
+    private long lastRocketUse = 0;
+    private boolean launched = false;
+    private double yTarget = -1;
+    private float targetPitch = 0;
+
+    public Pitch40Util() {
+        super(Main.MOVEMENT, "Pitch40Util", "Maintains a level Y-flight with fireworks and smooth pitch control.");
+    }
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
-    public final Setting<Boolean> autoBoundAdjust = sgGeneral.add(new BoolSetting.Builder()
-        .name("auto-adjust-bounds")
-        .description("Adjusts your bounds to make you continue to gain height. Good for fixing falling on reconnect or lag, etc.")
-        .defaultValue(true)
+    private final Setting<Integer> fireworkDelay = sgGeneral.add(new IntSetting.Builder()
+        .name("timed-delay")
+        .description("The delay between firework usages in milliseconds.")
+        .defaultValue(4000)
+        .sliderRange(0, 10000)
         .build()
     );
 
-    public final Setting<Double> boundGap = sgGeneral.add(new DoubleSetting.Builder()
-        .name("bound-gap")
-        .description("The gap between the upper and lower bounds. Used when reconnecting, or when at max height if Auto Adjust Bounds is enabled.")
-        .defaultValue(60)
-        .sliderRange(50, 100)
+    private final Setting<Boolean> useManualY = sgGeneral.add(new BoolSetting.Builder()
+        .name("use-manual-y-level")
+        .description("Use a manually set Y level instead of the Y level when activated.")
+        .defaultValue(false)
         .build()
     );
 
-    public final Setting<Boolean> autoFirework = sgGeneral.add(new BoolSetting.Builder()
-        .name("auto-firework")
-        .description("Uses a firework automatically if your velocity is too low.")
-        .defaultValue(true)
+    private final Setting<Integer> manualYLevel = sgGeneral.add(new IntSetting.Builder()
+        .name("manual-y-level")
+        .description("The Y level to maintain when using manual Y level.")
+        .defaultValue(256)
+        .sliderRange(-64, 320)
+        .visible(useManualY::get)
+        .onChanged(val -> yTarget = val)
         .build()
     );
-
-    public final Setting<Double> velocityThreshold = sgGeneral.add(new DoubleSetting.Builder()
-        .name("velocity-threshold")
-        .description("Velocity must be below this value when going up for firework to activate.")
-        .defaultValue(-0.05)
-        .sliderRange(-0.5, 1)
-        .visible(autoFirework::get)
-        .build()
-    );
-
-    public final Setting<Integer> fireworkCooldownTicks = sgGeneral.add(new IntSetting.Builder()
-        .name("cooldown-ticks")
-        .description("Cooldown after using a firework in ticks.")
-        .defaultValue(10)
-        .sliderRange(0, 100)
-        .visible(autoFirework::get)
-        .build()
-    );
-
-    public Pitch40Util() {
-        super(Main.MOVEMENT, "Pitch40Util", "Makes sure pitch 40 stays on when reconnecting to 2b2t, and sets your bounds as you reach highest point each climb.");
-    }
-
-    Module elytraFly = Modules.get().get(ElytraFly.class);
-
-    private ElytraFlightModes oldValue;
-
-    @SuppressWarnings("unchecked")
-    private Setting<ElytraFlightModes> elytraFlyMode = (Setting<ElytraFlightModes>)elytraFly.settings.get("mode");
 
     @Override
-    public void onActivate()
-    {
-        oldValue = elytraFlyMode.get();
+    public void onActivate() {
+        launched = false;
+        yTarget = -1;
 
-        // Make sure meteors ElytraFly is on pitch40 mode
-        elytraFlyMode.set(ElytraFlightModes.Pitch40);
-    }
-
-    @Override
-    public void onDeactivate()
-    {
-        if (elytraFly.isActive())
-        {
-            elytraFly.toggle();
+        if (mc.player == null || !mc.player.isGliding()) {
+            info("You must be flying before enabling AFKVanillaFly.");
         }
-        elytraFlyMode.set(oldValue);
     }
 
-    int fireworkCooldown = 0;
+    public void tickFlyLogic() {
+        if (mc.player == null) return;
 
-    boolean goingUp = true;
+        double currentY = mc.player.getY();
 
-    int elytraSwapSlot = -1;
+        if (mc.player.isGliding()) {
+            if (yTarget == -1 || !launched) {
+                if (useManualY.get()) {
+                    yTarget = manualYLevel.get();
+                } else {
+                    yTarget = currentY;
+                }
+                launched = true;
+            }
 
-    private void resetBounds()
-    {
-        Setting<Double> upperBounds = (Setting<Double>) elytraFly.settings.get("pitch40-upper-bounds");
-        upperBounds.set(mc.player.getY() - 5);
-        Setting<Double> lowerBounds = (Setting<Double>) elytraFly.settings.get("pitch40-lower-bounds");
-        lowerBounds.set(mc.player.getY() - 5 - boundGap.get());
+            // will prevent from flying straight down into the ground - adjust y range if player moves vertical
+            // but only if not using manual Y level
+            if (!useManualY.get()) {
+                double yDiffFromLock = currentY - yTarget;
+                if (Math.abs(yDiffFromLock) > 10.0) {
+                    yTarget = currentY; // reset the current y-level to maintain
+                    info("Y-lock reset due to altitude deviation.");
+                }
+            }
+
+            double yDiff = currentY - yTarget;
+
+            if (Math.abs(yDiff) > 10.0) {
+                targetPitch = (float) (Math.atan2(yDiff, 100) * (180 / Math.PI));
+            } else if (yDiff > 2.0) {
+                targetPitch = 10f;
+            } else if (yDiff < -2.0) {
+                targetPitch = -10f;
+            } else {
+                targetPitch = 0f;
+            }
+
+            float currentPitch = mc.player.getPitch();
+            float pitchDiff = targetPitch - currentPitch;
+            mc.player.setPitch(currentPitch + pitchDiff * 0.1f);
+
+            if (System.currentTimeMillis() - lastRocketUse > fireworkDelay.get()) {
+                tryUseFirework();
+            }
+        } else {
+            if (!launched) {
+                mc.player.jump();
+                launched = true;
+            } else if (System.currentTimeMillis() - lastRocketUse > 1000) {
+                tryUseFirework();
+            }
+            yTarget = -1;
+        }
+    }
+
+    public void resetYLock() {
+        yTarget = -1;
+        launched = false;
     }
 
     @EventHandler
-    private void onTick(TickEvent.Pre event)
-    {
-        if (elytraFly.isActive())
-        {
-
-            if (fireworkCooldown > 0) {
-                fireworkCooldown--;
-            }
-
-            if (elytraSwapSlot != -1)
-            {
-                InvUtils.swap(elytraSwapSlot, true);
-                mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
-                InvUtils.swapBack();
-                elytraSwapSlot = -1;
-            }
-
-            // this means the player fell below the lower bound, so we reset the bounds. this will only really happen if not using fireworks
-            if (autoBoundAdjust.get() && mc.player.getY() <= (double)elytraFly.settings.get("pitch40-lower-bounds").get() - 10)
-            {
-                resetBounds();
-                return;
-            }
-
-            // -40 pitch is facing upwards
-            if (mc.player.getPitch() == -40)
-            {
-//                info("Velocity less than target: " + (mc.player.getVelocity().y < velocityThreshold.get()));
-//                info("Y less than upper bounds: " + (mc.player.getY() < (double)elytraFlyModule.settings.get("pitch40-upper-bounds").get()));
-                goingUp = true;
-                if (autoFirework.get() && mc.player.getVelocity().y < velocityThreshold.get() && mc.player.getY() < (double)elytraFly.settings.get("pitch40-upper-bounds").get())
-                {
-                    if (fireworkCooldown == 0) {
-                        int launchStatus = firework(mc, false);
-                        if (launchStatus >= 0)
-                        {
-                            fireworkCooldown = fireworkCooldownTicks.get();
-                            // cant swap back to chestplate on the same tick
-                            // stupid solution, but we need a number for non swapping return value.
-                            if (launchStatus != 200) elytraSwapSlot = launchStatus;
-
-                        }
-                    }
-                }
-            }
-            // waits until your at the highest point, when y velocity is 0, then sets min and max bounds based on your position
-            else if (autoBoundAdjust.get() && goingUp && mc.player.getVelocity().y <= 0) {
-                goingUp = false;
-                resetBounds();
-            }
-        }
-        else
-        {
-            // waits for you to not be in queue, then turns elytrafly back on
-            if (!mc.player.getAbilities().allowFlying)
-            {
-                elytraFly.toggle();
-                // always reset when rejoining
-                resetBounds();
-            }
-        }
-
+    private void onTick(TickEvent.Pre event) {
+        tickFlyLogic();
     }
 
+    private void tryUseFirework() {
+        FindItemResult hotbar = InvUtils.findInHotbar(Items.FIREWORK_ROCKET);
+        if (!hotbar.found()) {
+            FindItemResult inv = InvUtils.find(Items.FIREWORK_ROCKET);
+            if (inv.found()) {
+                int hotbarSlot = findEmptyHotbarSlot();
+                if (hotbarSlot != -1) {
+                    InvUtils.move().from(inv.slot()).to(hotbarSlot);
+                } else {
+                    info("No empty hotbar slot available to move fireworks.");
+                    return;
+                }
+            } else {
+                info("No fireworks found in hotbar or inventory.");
+                return;
+            }
+        }
+        Utils.firework(mc, false);
+        lastRocketUse = System.currentTimeMillis();
+    }
 
-
+    private int findEmptyHotbarSlot() {
+        for (int i = 0; i < 9; i++) {
+            if (mc.player.getInventory().getStack(i).isEmpty()) return i;
+        }
+        return -1;
+    }
 }
