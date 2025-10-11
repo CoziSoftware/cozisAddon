@@ -7,7 +7,7 @@ A 1.21.5 Meteor Client utility based addon.
 - ChatToWeb, DiscordNotifications, PortalMaker, SignASign
 
 **Current Rendering Modules**
-- SignHistory, StashFinderPlus, NewChunksPlus
+- SignHistory, StashFinderPlus, NewChunksPlus, PearlOwner
 
 **Current Movement Modules**
 - Pitch40Util
