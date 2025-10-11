@@ -2,6 +2,7 @@ package com.example.addon;
 
 import com.example.addon.commands.CommandExample;
 import com.example.addon.hud.EntityList;
+import com.example.addon.hud.TotemCount;
 import com.example.addon.modules.PortalMaker;
 import com.example.addon.modules.ChatToWeb;
 import com.example.addon.modules.DiscordNotifications;
@@ -13,6 +14,7 @@ import com.example.addon.modules.NewChunksPlus;
 import com.example.addon.modules.PearlOwner;
 import com.example.addon.modules.searcharea.SearchArea;
 import com.example.addon.modules.TrailFollower;
+import com.example.addon.modules.DisconnectSound;
 import com.mojang.logging.LogUtils;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -47,7 +49,8 @@ public class Main extends MeteorAddon {
          Modules.get().add(new NewChunksPlus());
          Modules.get().add(new PearlOwner());
          Modules.get().add(new SearchArea());
-         
+         Modules.get().add(new DisconnectSound());
+
          // Only add TrailFollower if Baritone is available
          try {
              Class.forName("baritone.api.BaritoneAPI");
@@ -62,6 +65,7 @@ public class Main extends MeteorAddon {
 
         // HUD
         Hud.get().register(EntityList.INFO);
+        Hud.get().register(TotemCount.INFO);
     }
 
     @Override

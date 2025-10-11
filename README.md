@@ -4,7 +4,7 @@ A 1.21.5 Meteor Client utility based addon.
 
 
 **Current Utility Modules** 
-- ChatToWeb, DiscordNotifications, PortalMaker, SignASign
+- ChatToWeb, DiscordNotifications, PortalMaker, SignASign, DisconnectSound
 
 **Current Rendering Modules**
 - SignHistory, StashFinderPlus, NewChunksPlus, PearlOwner
@@ -13,7 +13,7 @@ A 1.21.5 Meteor Client utility based addon.
 - Pitch40Util, TrailFollower, SearchArea
 
 **Current HUD Modules**
-- EntityList
+- EntityList, TotemCount
 
 **Credits**
 - https://github.com/dekrom/BepHaxAddon
