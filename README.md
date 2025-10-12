@@ -1,5 +1,5 @@
 # cozisAddon
-A 1.21.5 Meteor Client utility based addon.
+A 2b2t Meteor Client utility based addon.
 
 ### Original Modules
 **<ins>Utility</ins>**
