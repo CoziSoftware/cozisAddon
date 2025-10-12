@@ -1,12 +1,13 @@
 package dev.cozi.addon.modules.Hunting;
 
+import dev.cozi.addon.modules.Movement.Pitch40Util;
+import dev.cozi.addon.modules.Movement.AFKVanillaFly;
 import baritone.api.BaritoneAPI;
 import baritone.api.pathing.goals.GoalXZ;
 import dev.cozi.addon.Main;
-import dev.cozi.addon.modules.Movement.Pitch40Util;
-import dev.cozi.addon.util.Utils;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import dev.cozi.addon.util.Utils;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
@@ -27,15 +28,18 @@ import xaeroplus.event.ChunkDataEvent;
 import xaeroplus.module.ModuleManager;
 import xaeroplus.module.impl.OldChunks;
 import xaeroplus.module.impl.PaletteNewChunks;
-import static dev.cozi.addon.util.Utils.positionInDirection;
-import static dev.cozi.addon.util.Utils.sendWebhook;
+
 import java.time.Duration;
 import java.util.ArrayDeque;
+
+import static dev.cozi.addon.util.Utils.positionInDirection;
+import static dev.cozi.addon.util.Utils.sendWebhook;
 
 public class TrailFollower extends Module
 {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
+    // TODO: Set this automatically either by looking at the rate of chunk loads or by using yaw instead of block pos so size doesnt negatively effect result
     public final Setting<Integer> maxTrailLength = sgGeneral.add(new IntSetting.Builder()
         .name("max-trail-length")
         .description("The number of trail points to keep for the average. Adjust to change how quickly the average will change. More does not necessarily equal better because if the list is too long it will contain chunks behind you.")
@@ -249,31 +253,7 @@ public class TrailFollower extends Module
         .build()
     );
 
-    public final Setting<Boolean> autoDisconnect = sgAdvanced.add(new BoolSetting.Builder()
-        .name("auto-disconnect")
-        .description("Automatically disconnect when chunk load speed exceeds threshold.")
-        .defaultValue(false)
-        .build()
-    );
-
-    public final Setting<Double> chunkSpeedThreshold = sgAdvanced.add(new DoubleSetting.Builder()
-        .name("chunk-speed-threshold")
-        .description("Chunks per second threshold to trigger disconnect.")
-        .defaultValue(10.0)
-        .min(0.1)
-        .sliderMax(50.0)
-        .visible(() -> autoDisconnect.get())
-        .build()
-    );
-
-    public final Setting<Integer> chunkSpeedWindow = sgAdvanced.add(new IntSetting.Builder()
-        .name("chunk-speed-window")
-        .description("Time window in seconds to measure chunk load speed.")
-        .defaultValue(10)
-        .sliderRange(5, 60)
-        .visible(() -> autoDisconnect.get())
-        .build()
-    );
+    // TODO: Auto disconnect at certain chunk load speed
 
     private boolean oldAutoFireworkValue;
 
@@ -286,9 +266,6 @@ public class TrailFollower extends Module
 
     private long lastFoundTrailTime;
     private long lastFoundPossibleTrailTime;
-
-    // Track chunk find timestamps for speed calculation
-    private ArrayDeque<Long> chunkFoundTimestamps = new ArrayDeque<>();
 
     private double pathDistanceActual = pathDistance.get();
 
@@ -310,7 +287,6 @@ public class TrailFollower extends Module
         followingTrail = false;
         trail = new ArrayDeque<>();
         possibleTrail = new ArrayDeque<>();
-        chunkFoundTimestamps.clear();
     }
 
     @Override
@@ -365,20 +341,18 @@ public class TrailFollower extends Module
                 if (overworldFlightMode.get() == OverworldFlightMode.PITCH40) {
                     Class<? extends Module> pitch40Util = Pitch40Util.class;
                     Module pitch40UtilModule = Modules.get().get(pitch40Util);
-                    if (pitch40UtilModule != null && !pitch40UtilModule.isActive()) {
+                    if (!pitch40UtilModule.isActive()) {
                         pitch40UtilModule.toggle();
                         if (pitch40Firework.get()) {
                             Setting<Boolean> setting = ((Setting<Boolean>) pitch40UtilModule.settings.get("auto-firework"));
-                            if (setting != null) {
-                                info("Auto Firework enabled, if you want to change the velocity threshold or the firework cooldown check the settings under Pitch40Util.");
-                                oldAutoFireworkValue = setting.get();
-                                setting.set(true);
-                            }
+                            info("Auto Firework enabled, if you want to change the velocity threshold or the firework cooldown check the settings under Pitch40Util.");
+                            oldAutoFireworkValue = setting.get();
+                            setting.set(true);
                         }
                     }
                 } else if (overworldFlightMode.get() == OverworldFlightMode.VANILLA) {
-                    Pitch40Util afkVanillaFly = Modules.get().get(Pitch40Util.class);
-                    if (afkVanillaFly != null && !afkVanillaFly.isActive()) {
+                    AFKVanillaFly afkVanillaFly = Modules.get().get(AFKVanillaFly.class);
+                    if (!afkVanillaFly.isActive()) {
                         afkVanillaFly.toggle();
                     }
                 }
@@ -420,7 +394,7 @@ public class TrailFollower extends Module
             case YAWLOCK: {
                 if (mc.world == null || mc.world.getRegistryKey().equals(World.NETHER)) return;
                 if (overworldFlightMode.get() == OverworldFlightMode.VANILLA) {
-                    Pitch40Util afkVanillaFly = Modules.get().get(Pitch40Util.class);
+                    AFKVanillaFly afkVanillaFly = Modules.get().get(AFKVanillaFly.class);
                     if (afkVanillaFly != null) {
                         afkVanillaFly.resetYLock();
                         if (afkVanillaFly.isActive()) afkVanillaFly.toggle();
@@ -428,20 +402,13 @@ public class TrailFollower extends Module
                 } else if (overworldFlightMode.get() == OverworldFlightMode.PITCH40) {
                     Class<? extends Module> pitch40Util = Pitch40Util.class;
                     Module pitch40UtilModule = Modules.get().get(pitch40Util);
-                    if (pitch40UtilModule != null && pitch40UtilModule.isActive()) {
+                    if (pitch40UtilModule.isActive()) {
                         pitch40UtilModule.toggle();
-                        // Restore auto-firework setting if it exists
-                        Setting<Boolean> autoFireworkSetting = (Setting<Boolean>) pitch40UtilModule.settings.get("auto-firework");
-                        if (autoFireworkSetting != null) {
-                            autoFireworkSetting.set(oldAutoFireworkValue);
-                        }
                     }
+                    ((Setting<Boolean>) pitch40UtilModule.settings.get("auto-firework")).set(oldAutoFireworkValue);
                 }
                 break;
             }
-            default:
-                // AUTO should be resolved to BARITONE or YAWLOCK during onActivate
-                break;
         }
     }
 
@@ -566,9 +533,6 @@ public class TrailFollower extends Module
                 mc.player.setYaw(Utils.smoothRotation(getActualYaw(mc.player.getYaw()), targetYaw, rotateScaling.get()));
                 break;
             }
-            default:
-                // AUTO should be resolved to BARITONE or YAWLOCK during onActivate
-                break;
         }
 
     }
@@ -643,8 +607,6 @@ public class TrailFollower extends Module
                 lastFoundTrailTime = System.currentTimeMillis();
                 trail.addAll(possibleTrail);
                 possibleTrail.clear();
-                // Start tracking chunk speed from when trail starts
-                chunkFoundTimestamps.clear();
             }
             return;
         }
@@ -654,22 +616,11 @@ public class TrailFollower extends Module
 
         double chunkAngle = Rotations.getYaw(pos);
         double angleDiff = Utils.angleDifference(targetYaw, chunkAngle);
-        // was not able to add this before, but now can successfully filter out most other trails using the most recent chunk for pathing
         if (followingTrail && Math.abs(angleDiff) > maxTrailDeviation.get())
         {
             return;
         }
         lastFoundTrailTime = System.currentTimeMillis();
-        
-        // Track chunk timestamp for speed calculation
-        chunkFoundTimestamps.add(System.currentTimeMillis());
-        
-        // Check if chunk speed exceeds threshold and disconnect if needed
-        if (checkChunkSpeedDisconnect())
-        {
-            return;
-        }
-        
         while(trail.size() >= maxTrailLength.get())
         {
             trail.pollFirst();
@@ -677,6 +628,7 @@ public class TrailFollower extends Module
 
         if (angleDiff > 0 && angleDiff < 90 && directionWeighting.get() == DirectionWeighting.LEFT)
         {
+
             for (int i = 0; i < directionWeightingMultiplier.get() - 1; i++)
             {
                 trail.pollFirst();
@@ -757,54 +709,6 @@ public class TrailFollower extends Module
         return (yaw % 360 + 360) % 360;
     }
 
-    /**
-     * Calculates the current chunk load speed in chunks per second
-     * @return chunks per second, or 0 if not enough data
-     */
-    private double calculateChunkSpeed()
-    {
-        if (chunkFoundTimestamps.isEmpty()) return 0.0;
-        
-        long currentTime = System.currentTimeMillis();
-        long windowMs = chunkSpeedWindow.get() * 1000L;
-        
-        // Remove timestamps outside the time window
-        while (!chunkFoundTimestamps.isEmpty() && currentTime - chunkFoundTimestamps.peekFirst() > windowMs)
-        {
-            chunkFoundTimestamps.pollFirst();
-        }
-        
-        if (chunkFoundTimestamps.isEmpty()) return 0.0;
-        
-        // Calculate chunks per second
-        long timeSpan = currentTime - chunkFoundTimestamps.peekFirst();
-        if (timeSpan == 0) return 0.0;
-        
-        return (chunkFoundTimestamps.size() * 1000.0) / timeSpan;
-    }
-
-    /**
-     * Checks if chunk speed exceeds threshold and triggers disconnect if enabled
-     * @return true if disconnected, false otherwise
-     */
-    private boolean checkChunkSpeedDisconnect()
-    {
-        if (!autoDisconnect.get() || !followingTrail) return false;
-        
-        double currentSpeed = calculateChunkSpeed();
-        
-        if (currentSpeed > chunkSpeedThreshold.get())
-        {
-            String message = String.format("Chunk load speed (%.2f chunks/s) exceeded threshold (%.2f chunks/s). Disconnecting.", 
-                currentSpeed, chunkSpeedThreshold.get());
-            log(message);
-            mc.player.networkHandler.onDisconnect(new DisconnectS2CPacket(Text.literal("[TrailFollower] " + message)));
-            return true;
-        }
-        
-        return false;
-    }
-
     private void log(String message)
     {
         info(message);
@@ -827,14 +731,6 @@ public class TrailFollower extends Module
         NONE,
         RIGHT
     }
-
-//    public enum ChunkTypes
-//    {
-//        ONLY_OLD, // only 1.12 chunks that are not 1.19 chunks
-//        OLD_AND_LOADED_IN_119, // 1.12 chunks that are loaded in 1.19
-//        ONLY_NEW, // only 1.19 chunks that are not 1.12 chunks
-//        ALL // all chunks
-//    }
 
     public enum TrailEndBehavior
     {

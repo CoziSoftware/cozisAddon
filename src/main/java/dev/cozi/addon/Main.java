@@ -5,6 +5,7 @@ import dev.cozi.addon.hud.EntityList;
 import dev.cozi.addon.hud.TotemCount;
 import dev.cozi.addon.hud.CrystalCount;
 import dev.cozi.addon.modules.Hunting.NewChunksPlus;
+import dev.cozi.addon.modules.Movement.AFKVanillaFly;
 import dev.cozi.addon.modules.Hunting.StashFinderPlus;
 import dev.cozi.addon.modules.Hunting.TrailFollower;
 import dev.cozi.addon.modules.Movement.Pitch40Util;
@@ -45,6 +46,8 @@ public class Main extends MeteorAddon {
          Modules.get().add(new SearchArea());
          Modules.get().add(new AntiSpam());
          Modules.get().add(new AutoLogPlus());
+         Modules.get().add(new AFKVanillaFly());
+         Modules.get().add(new TrailFollower());
 
          // Only add TrailFollower if Baritone is available
          try {
