@@ -16,7 +16,6 @@ A 2b2t Meteor Client utility based addon.
 + AntiSpam - ported from [Asteroide](https://github.com/asteroide-development/Asteroide)
 
 **<ins>Renders</ins>**
-+ NewChunksPlus - ported from [Trouser Streak](https://github.com/etianl/Trouser-Streak)
 + PearlOwner - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
 
 **<ins>Hunting</ins>**
