@@ -1,4 +1,4 @@
-package dev.cozi.addon.modules;
+package dev.cozi.addon.modules.Utility;
 
 import dev.cozi.addon.Main;
 import meteordevelopment.meteorclient.events.world.TickEvent;

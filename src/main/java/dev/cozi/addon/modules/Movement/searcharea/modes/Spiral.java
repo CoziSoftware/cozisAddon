@@ -1,12 +1,12 @@
-package dev.cozi.addon.modules.searcharea.modes;
+package dev.cozi.addon.modules.Movement.searcharea.modes;
 
 import meteordevelopment.meteorclient.utils.player.Rotations;
 import net.minecraft.util.math.BlockPos;
 
 import java.io.*;
 
-import dev.cozi.addon.modules.searcharea.SearchAreaMode;
-import dev.cozi.addon.modules.searcharea.SearchAreaModes;
+import dev.cozi.addon.modules.Movement.searcharea.SearchAreaMode;
+import dev.cozi.addon.modules.Movement.searcharea.SearchAreaModes;
 
 import static dev.cozi.addon.util.Utils.*;
 import static meteordevelopment.meteorclient.utils.player.ChatUtils.info;

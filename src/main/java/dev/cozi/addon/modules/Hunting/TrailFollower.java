@@ -1,8 +1,9 @@
-package dev.cozi.addon.modules;
+package dev.cozi.addon.modules.Hunting;
 
 import baritone.api.BaritoneAPI;
 import baritone.api.pathing.goals.GoalXZ;
 import dev.cozi.addon.Main;
+import dev.cozi.addon.modules.Movement.Pitch40Util;
 import dev.cozi.addon.util.Utils;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;

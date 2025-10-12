@@ -1,4 +1,4 @@
-package dev.cozi.addon.modules;
+package dev.cozi.addon.modules.Utility;
 
 import meteordevelopment.meteorclient.events.game.ReceiveMessageEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;

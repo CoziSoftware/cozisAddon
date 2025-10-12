@@ -1,4 +1,4 @@
-package dev.cozi.addon.modules.searcharea;
+package dev.cozi.addon.modules.Movement.searcharea;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

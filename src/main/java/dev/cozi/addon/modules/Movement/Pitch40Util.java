@@ -1,4 +1,4 @@
-package dev.cozi.addon.modules;
+package dev.cozi.addon.modules.Movement;
 
 import dev.cozi.addon.Main;
 import dev.cozi.addon.util.Utils;

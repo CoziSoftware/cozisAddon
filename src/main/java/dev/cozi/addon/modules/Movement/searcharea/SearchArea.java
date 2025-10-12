@@ -1,9 +1,9 @@
-package dev.cozi.addon.modules.searcharea;
+package dev.cozi.addon.modules.Movement.searcharea;
 
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import dev.cozi.addon.Main;
-import dev.cozi.addon.modules.searcharea.modes.Rectangle;
-import dev.cozi.addon.modules.searcharea.modes.Spiral;
+import dev.cozi.addon.modules.Movement.searcharea.modes.Rectangle;
+import dev.cozi.addon.modules.Movement.searcharea.modes.Spiral;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.widgets.WWidget;
 import meteordevelopment.meteorclient.gui.widgets.containers.WVerticalList;

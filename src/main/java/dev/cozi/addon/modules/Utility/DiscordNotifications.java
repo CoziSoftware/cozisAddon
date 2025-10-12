@@ -1,4 +1,4 @@
-package dev.cozi.addon.modules;
+package dev.cozi.addon.modules.Utility;
 
 import com.mojang.authlib.GameProfile;
 import dev.cozi.addon.Main;
@@ -117,6 +117,18 @@ public class DiscordNotifications extends Module {
         .description("Logs death messages.")
         .defaultValue(false)
         .visible(() -> !logAll.get())
+        .build()
+    );
+
+    private final Setting<Boolean> testWebhook = sgGeneral.add(new BoolSetting.Builder()
+        .name("test-webhook")
+        .description("Sends a test message to verify the webhook is working.")
+        .defaultValue(false)
+        .onChanged(value -> {
+            if (value) {
+                testWebhookConnection();
+            }
+        })
         .build()
     );
 
@@ -284,6 +296,44 @@ public class DiscordNotifications extends Module {
             "}]}";
         // use threads so the game doesnt lag when sending a ton of webhooks
         new Thread(() -> sendWebhook(webhookURL.get(), json, null)).start();
+    }
+
+    private void testWebhookConnection()
+    {
+        if (webhookURL.get().isBlank())
+        {
+            error("Webhook URL is empty! Please set a valid webhook URL.");
+            testWebhook.set(false);
+            return;
+        }
+        
+        String testMessage = "Test webhook message from Discord Notifications module!";
+        if (timestamp.get())
+        {
+            LocalTime now = LocalTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            String timestamp = now.format(formatter);
+            testMessage = "[" + timestamp + "] " + testMessage;
+        }
+        
+        String json = "{\n" +
+            "\"embeds\": [{" +
+            "\"description\": \"" + testMessage + "\"," +
+            "\"color\": 3066993" + // green color
+            "}]}";
+        
+        info("Sending test webhook...");
+        new Thread(() -> {
+            try {
+                sendWebhook(webhookURL.get(), json, null);
+                info("Test webhook sent successfully!");
+            } catch (Exception e) {
+                error("Failed to send test webhook: " + e.getMessage());
+            }
+        }).start();
+        
+        // Reset the toggle button
+        testWebhook.set(false);
     }
 
     public enum MessageType

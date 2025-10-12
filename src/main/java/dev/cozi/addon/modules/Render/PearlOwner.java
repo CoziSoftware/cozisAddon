@@ -1,4 +1,4 @@
-package dev.cozi.addon.modules;
+package dev.cozi.addon.modules.Render;
 
 import meteordevelopment.meteorclient.events.render.Render2DEvent;
 // import meteordevelopment.meteorclient.renderer.Renderer2D;
@@ -42,13 +42,6 @@ public class PearlOwner extends Module {
         .name("name-color")
         .description("The color of the owner's name.")
         .defaultValue(new SettingColor(255, 255, 255, 255))
-        .build()
-    );
-
-    private final Setting<SettingColor> backgroundColor = sgRender.add(new ColorSetting.Builder()
-        .name("background-color")
-        .description("The color of the nametag background.")
-        .defaultValue(new SettingColor(170, 0, 255, 49))
         .build()
     );
 

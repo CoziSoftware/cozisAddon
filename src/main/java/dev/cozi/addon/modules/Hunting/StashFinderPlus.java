@@ -1,4 +1,4 @@
-package dev.cozi.addon.modules;
+package dev.cozi.addon.modules.Hunting;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -295,7 +295,7 @@ public class StashFinderPlus extends Module
                         String json = "{\"embeds\": [{" +
                             "\"title\": \"Stash Found!\"," +
                             "\"color\": 2154012," +
-                            "\"description\": \"Coordinates: || X: " + chunk.x + " Z: " + chunk.z + "|| in " + chunkType + " chunks\"," +
+                            "\"description\": \"Coordinates: || X: " + chunk.x + " Z: " + chunk.z + "|| in " + chunkType + " chunks in the" + currentDimension.getValue().getPath() + "\"," +
                             "\"fields\": [" +
                                 "{" +
                                     "\"name\": \"Chests\"," +
