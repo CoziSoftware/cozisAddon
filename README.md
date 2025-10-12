@@ -35,4 +35,4 @@ cd cozisAddon/
 ./gradlew build
 ```
 
-**Disclaimer:** This code is safe however I wouldn't trust what you download from a 2b2t player so if you feel inclined please look over the codebase to ensure your own security.
+**Disclaimer:** This code is safe however I wouldn't trust what you download from a 2b2t player so if you feel inclined, please look over the codebase to ensure your own security.
