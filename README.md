@@ -27,3 +27,10 @@ A 1.21.5 Meteor Client utility based addon.
 
 **<ins>HUD</ins>**
 + EntityList - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
+
+### Manual Install
+```
+git clone https://github.com/CoziSoftware/cozisAddon/
+cd cozisAddon/
+./gradlew build
+```
