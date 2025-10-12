@@ -27,7 +27,7 @@ A 2b2t Meteor Client utility based addon.
 + TrailFollower - originally from [WarriorLost](https://github.com/WarriorLost)
 + SearchArea - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
 + AFKVanillaFly - originally from [xqyet](https://github.com/xqyet)
-+ 
+  
 **<ins>HUD</ins>**
 + EntityList - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
 
