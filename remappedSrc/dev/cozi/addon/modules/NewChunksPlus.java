@@ -27,6 +27,7 @@ import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.*;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
@@ -693,8 +694,14 @@ public class NewChunksPlus extends Module {
 			if (mc.world.getChunkManager().getChunk(packet.getChunkX(), packet.getChunkZ()) == null) {
 				WorldChunk chunk = new WorldChunk(mc.world, oldpos);
 				try {
+					Map<Heightmap.Type, long[]> heightmaps = new EnumMap<>(Heightmap.Type.class);
+
+					Heightmap.Type type = Heightmap.Type.MOTION_BLOCKING;
+					long[] emptyHeightmapData = new long[37];
+					heightmaps.put(type, emptyHeightmapData);
+
 					CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-						chunk.loadFromPacket(packet.getChunkData().getSectionsDataBuf(), null,
+						chunk.loadFromPacket(packet.getChunkData().getSectionsDataBuf(), heightmaps,
 								packet.getChunkData().getBlockEntities(packet.getChunkX(), packet.getChunkZ()));
 					}, taskExecutor);
 					future.join();

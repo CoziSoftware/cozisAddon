@@ -1,7 +1,7 @@
 package dev.cozi.addon.modules;
 
 import meteordevelopment.meteorclient.events.render.Render2DEvent;
-// import meteordevelopment.meteorclient.renderer.Renderer2D;
+import meteordevelopment.meteorclient.renderer.Renderer2D;
 import meteordevelopment.meteorclient.renderer.text.TextRenderer;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
@@ -129,11 +129,11 @@ public class PearlOwner extends Module {
 
         // Render all collected pearls
         for (PearlInfo info : pearlsToRender) {
-            renderNametag(info.text, info.x, info.y, event);
+            renderNametag(info.text, info.x, info.y);
         }
     }
 
-    private void renderNametag(String text, double x, double y, Render2DEvent event) {
+    private void renderNametag(String text, double x, double y) {
         TextRenderer textRenderer = TextRenderer.get();
         double textWidth = textRenderer.getWidth(text, true);
         double textHeight = textRenderer.getHeight(true);
@@ -143,9 +143,9 @@ public class PearlOwner extends Module {
         y -= textHeight / 2;
 
         // Render background
-        // Renderer2D.COLOR.begin();
-        // Renderer2D.COLOR.quad(x - 2, y - 2, textWidth + 4, textHeight + 4, backgroundColor.get());
-        // Renderer2D.COLOR.render(null);
+        Renderer2D.COLOR.begin();
+        Renderer2D.COLOR.quad(x - 2, y - 2, textWidth + 4, textHeight + 4, backgroundColor.get());
+        Renderer2D.COLOR.render(null);
 
         // Render text
         textRenderer.begin(scale.get());
