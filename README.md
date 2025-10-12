@@ -12,17 +12,17 @@ A 1.21.5 Meteor Client utility based addon.
 ### Ported Modules
 **<ins>Utility</ins>**
 + DiscordNotifications - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
-+ PortalMaker - ported from [PathSeeker](https://github.com/FaxHack/PathSeeker)
++ PortalMaker - originally from [xqyet](https://github.com/xqyet)
 + AntiSpam - ported from [Asteroide](https://github.com/asteroide-development/Asteroide)
 
 **<ins>Renders</ins>**
 + StashFinderPlus - ported from [Jeff Mod](https://github.com/miles352/meteor-stashhunting-addon) - **I added the ability to bulk add potential stashes to waypoints and auto-disconnect when a stash is found.**
-+ NewChunksPlus - ported from [Jeff Mod](https://github.com/miles352/meteor-stashhunting-addon)
++ NewChunksPlus - ported from [Trouser Streak](https://github.com/etianl/Trouser-Streak)
 + PearlOwner - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
 
 **<ins>Movement</ins>**
 + Pitch40Util - ported from [Jeff Mod](https://github.com/miles352/meteor-stashhunting-addon)
-+ TrailFollower - ported from [Jeff Mod](https://github.com/miles352/meteor-stashhunting-addon)
++ TrailFollower - originally from [WarriorLost](https://github.com/WarriorLost)
 + SearchArea - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
 
 **<ins>HUD</ins>**
