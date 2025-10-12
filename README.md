@@ -11,7 +11,7 @@ A 2b2t Meteor Client utility based addon.
 
 ### Ported Modules
 **<ins>Utility</ins>**
-+ DiscordNotifications - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
++ DiscordNotifications - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon) - **I added the ability test the Discord webhook.**
 + PortalMaker - originally from [xqyet](https://github.com/xqyet)
 + AntiSpam - ported from [Asteroide](https://github.com/asteroide-development/Asteroide)
 
@@ -19,7 +19,7 @@ A 2b2t Meteor Client utility based addon.
 + PearlOwner - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
 
 **<ins>Hunting</ins>**
-+ StashFinderPlus - ported from [Jeff Mod](https://github.com/miles352/meteor-stashhunting-addon) - **I added the ability to bulk add potential stashes to waypoints and auto-disconnect when a stash is found.**
++ StashFinderPlus - ported from [Jeff Mod](https://github.com/miles352/meteor-stashhunting-addon) - **I added the ability to bulk add potential stashes to waypoint, auto-disconnect when a stash is found and added more information when a Discord webhook is sent.**
 + NewChunksPlus - ported from [Trouser Streak](https://github.com/etianl/Trouser-Streak)
 
 **<ins>Movement</ins>**
