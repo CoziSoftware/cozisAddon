@@ -16,9 +16,12 @@ A 2b2t Meteor Client utility based addon.
 + AntiSpam - ported from [Asteroide](https://github.com/asteroide-development/Asteroide)
 
 **<ins>Renders</ins>**
-+ StashFinderPlus - ported from [Jeff Mod](https://github.com/miles352/meteor-stashhunting-addon) - **I added the ability to bulk add potential stashes to waypoints and auto-disconnect when a stash is found.**
 + NewChunksPlus - ported from [Trouser Streak](https://github.com/etianl/Trouser-Streak)
 + PearlOwner - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
+
+**<ins>Hunting</ins>**
++ StashFinderPlus - ported from [Jeff Mod](https://github.com/miles352/meteor-stashhunting-addon) - **I added the ability to bulk add potential stashes to waypoints and auto-disconnect when a stash is found.**
++ NewChunksPlus - ported from [Trouser Streak](https://github.com/etianl/Trouser-Streak)
 
 **<ins>Movement</ins>**
 + Pitch40Util - ported from [Jeff Mod](https://github.com/miles352/meteor-stashhunting-addon)
