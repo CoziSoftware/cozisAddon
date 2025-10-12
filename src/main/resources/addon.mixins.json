@@ -1,6 +1,6 @@
 {
     "required": true,
-    "package": "com.example.addon.mixin",
+    "package": "dev.cozi.addon.mixin",
     "compatibilityLevel": "JAVA_21",
     "client": [
       "AbstractBlockStateMixin",
@@ -62,7 +62,10 @@
       "accessor.PlayerMoveC2SPacketAccessor",
       "accessor.SourceManagerAccessor",
       "accessor.StyleAccessor",
-      "XaeroDrawingMixin"
+      "XaeroDrawingMixin",
+      "AbstractSignEditScreenMixin",
+      "accessor.AbstractSignEditScreenAccessor",
+      "accessor.ClientConnectionAccessor"
   
     ],
     "injectors": {

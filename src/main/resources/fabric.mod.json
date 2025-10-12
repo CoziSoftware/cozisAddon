@@ -10,11 +10,11 @@
   "contact": {
     "sources": "https://github.com/CoziSoftware/cozisAddon"
   },
-  "icon": "assets/template/icon.png",
+  "icon": "assets/Main/icon.png",
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "com.example.addon.Main"
+      "dev.cozi.addon.Main"
     ]
   },
   "mixins": [

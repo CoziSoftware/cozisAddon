@@ -1,6 +1,6 @@
 {
     "required": false,
-    "package": "com.example.addon.mixin.meteor",
+    "package": "dev.cozi.mixin.meteor",
     "compatibilityLevel": "JAVA_21",
     "client": [
       "PeekScreenMixin",
