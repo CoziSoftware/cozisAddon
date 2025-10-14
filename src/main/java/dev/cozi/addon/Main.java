@@ -4,8 +4,10 @@ import com.mojang.logging.LogUtils;
 import dev.cozi.addon.hud.EntityList;
 import dev.cozi.addon.hud.TotemCount;
 import dev.cozi.addon.hud.CrystalCount;
+import dev.cozi.addon.hud.DubCountGUI;
 import dev.cozi.addon.modules.Hunting.NewChunksPlus;
 import dev.cozi.addon.modules.Movement.AFKVanillaFly;
+import dev.cozi.addon.modules.Movement.ElytraRedeploy;
 import dev.cozi.addon.modules.Hunting.StashFinderPlus;
 import dev.cozi.addon.modules.Hunting.TrailFollower;
 import dev.cozi.addon.modules.Movement.Pitch40Util;
@@ -13,7 +15,9 @@ import dev.cozi.addon.modules.Movement.searcharea.SearchArea;
 import dev.cozi.addon.modules.Render.PearlOwner;
 import dev.cozi.addon.modules.Utility.AntiSpam;
 import dev.cozi.addon.modules.Utility.AutoLogPlus;
+import dev.cozi.addon.modules.Utility.AutoShulker;
 import dev.cozi.addon.modules.Utility.DiscordNotifications;
+import dev.cozi.addon.modules.Utility.DubCount;
 import dev.cozi.addon.modules.Utility.PortalMaker;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -48,6 +52,9 @@ public class Main extends MeteorAddon {
          Modules.get().add(new AutoLogPlus());
          Modules.get().add(new AFKVanillaFly());
          Modules.get().add(new TrailFollower());
+         Modules.get().add(new AutoShulker());
+         Modules.get().add(new ElytraRedeploy());
+         Modules.get().add(new DubCount());
 
          // Only add TrailFollower if Baritone is available
          try {
@@ -65,6 +72,7 @@ public class Main extends MeteorAddon {
         Hud.get().register(EntityList.INFO);
         Hud.get().register(TotemCount.INFO);
         Hud.get().register(CrystalCount.INFO);
+        Hud.get().register(DubCountGUI.INFO);
     }
 
     @Override
