@@ -4,16 +4,22 @@ A 2b2t Meteor Client utility based addon.
 ### Original Modules
 **<ins>Utility</ins>**
 + AutoLog Plus - A module that disconnects the player according to specific parameters
++ Auto Shulker - When your inventory is full it places and opens a shulker box and then puts your items in the shulker box
+
+**<ins>Movement</ins>**
++ Elytra Redeploy - Jumps and flies away if you hit the ground with this enabled
 
 **<ins>HUD</ins>**
 + TotemCount - A HUD module that shows the amount of totems in your inventory
 + CrystalCount - A HUD module that shows the amount of end crystals in your inventory
++ Dub Count - A HUD module that shows what is output from the Dub Counter module 
 
 ### Ported Modules
 **<ins>Utility</ins>**
 + DiscordNotifications - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon) - **I added the ability test the Discord webhook.**
 + PortalMaker - originally from [xqyet](https://github.com/xqyet)
 + AntiSpam - ported from [Asteroide](https://github.com/asteroide-development/Asteroide)
++ Dub Counter - ported from [IKEA](https://github.com/Nooniboi/Public-Ikea) - **I changed this module a bit to allow the HUD element to work properly**
 
 **<ins>Renders</ins>**
 + PearlOwner - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
