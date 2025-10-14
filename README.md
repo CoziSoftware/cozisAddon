@@ -19,7 +19,7 @@ A 2b2t Meteor Client utility based addon.
 + DiscordNotifications - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon) - **I added the ability test the Discord webhook.**
 + PortalMaker - originally from [xqyet](https://github.com/xqyet)
 + AntiSpam - ported from [Asteroide](https://github.com/asteroide-development/Asteroide)
-+ Dub Counter - ported from [IKEA](https://github.com/Nooniboi/Public-Ikea)
++ Dub Counter - ported from [IKEA](https://github.com/Nooniboi/Public-Ikea) - **I changed this module a bit to allow the HUD element to work properly**
 
 **<ins>Renders</ins>**
 + PearlOwner - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
