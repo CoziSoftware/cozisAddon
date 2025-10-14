@@ -1,5 +1,3 @@
-create-version-branch.ps1
-create-version-branch.sh
 BRANCHING_GUIDE.md
 .editorconfig
 # gradle
