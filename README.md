@@ -3,7 +3,7 @@ A 2b2t Meteor Client utility based addon.
 
 ### Original Modules
 **<ins>Utility</ins>**
-+ AutoLog Plus - A module that disconnects the player according to specific parameters
++ AutoLog Plus - A module that disconnects the player according to specific parameters (Based off of [Numby-hack]https://github.com/cqb13/Numby-hack))
 + Auto Shulker - When your inventory is full it places and opens a shulker box and then puts your items in the shulker box
 
 **<ins>Movement</ins>**
@@ -35,6 +35,7 @@ A 2b2t Meteor Client utility based addon.
 + SearchArea - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
 + AFKVanillaFly - originally from [xqyet](https://github.com/xqyet)
 + GrimScaffold - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
++ Diagonal Elytra Fly - ported from [Jeff Mod](https://github.com/miles352/meteor-stashhunting-addon) - **I changed this module a bit to make it work better with diagonals**
 
 **<ins>HUD</ins>**
 + EntityList - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)

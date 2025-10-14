@@ -8,6 +8,7 @@ import dev.cozi.addon.hud.DubCountGUI;
 import dev.cozi.addon.modules.Hunting.NewChunksPlus;
 import dev.cozi.addon.modules.Movement.AFKVanillaFly;
 import dev.cozi.addon.modules.Movement.ElytraRedeploy;
+import dev.cozi.addon.modules.Movement.ElytraFlyPlusPlus;
 import dev.cozi.addon.modules.Movement.GrimScaffold;
 import dev.cozi.addon.modules.Utility.GrimAirPlace;
 import dev.cozi.addon.modules.Hunting.StashFinderPlus;
@@ -58,13 +59,15 @@ public class Main extends MeteorAddon {
          Modules.get().add(new DubCount());
          Modules.get().add(new GrimScaffold());
          Modules.get().add(new GrimAirPlace());
-         // Only add TrailFollower if Baritone is available
+         
+         // Only add modules that require Baritone if Baritone is available
          try {
              Class.forName("baritone.api.BaritoneAPI");
+             Modules.get().add(new ElytraFlyPlusPlus());
              Modules.get().add(new TrailFollower());
-             LOG.info("TrailFollower loaded (Baritone detected)");
+             LOG.info("ElytraFlyPlusPlus and TrailFollower loaded (Baritone detected)");
          } catch (ClassNotFoundException e) {
-             LOG.info("TrailFollower not loaded (Baritone not found)");
+             LOG.info("ElytraFlyPlusPlus and TrailFollower not loaded (Baritone not found)");
          }
          
         // Commands
