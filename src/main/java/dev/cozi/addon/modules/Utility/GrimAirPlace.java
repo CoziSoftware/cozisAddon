@@ -1,7 +1,6 @@
 package dev.cozi.addon.modules.Utility;
 
 import dev.cozi.addon.Main;
-import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import net.minecraft.item.SpawnEggItem;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -12,7 +11,6 @@ import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.item.BlockItem;
 import net.minecraft.network.packet.c2s.play.*;
-import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
