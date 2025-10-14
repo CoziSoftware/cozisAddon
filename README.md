@@ -20,6 +20,7 @@ A 2b2t Meteor Client utility based addon.
 + PortalMaker - originally from [xqyet](https://github.com/xqyet)
 + AntiSpam - ported from [Asteroide](https://github.com/asteroide-development/Asteroide)
 + Dub Counter - ported from [IKEA](https://github.com/Nooniboi/Public-Ikea) - **I changed this module a bit to allow the HUD element to work properly**
++ GrimAirPlace - ported from [Jeff Mod](https://github.com/miles352/meteor-stashhunting-addon)
 
 **<ins>Renders</ins>**
 + PearlOwner - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
@@ -33,7 +34,8 @@ A 2b2t Meteor Client utility based addon.
 + TrailFollower - originally from [WarriorLost](https://github.com/WarriorLost)
 + SearchArea - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
 + AFKVanillaFly - originally from [xqyet](https://github.com/xqyet)
-  
++ GrimScaffold - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
+
 **<ins>HUD</ins>**
 + EntityList - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
 
