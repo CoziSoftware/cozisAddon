@@ -31,11 +31,24 @@ A 2b2t Meteor Client utility based addon.
 **<ins>HUD</ins>**
 + EntityList - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
 
-### Manual Install
-```
+### Installation
+
+#### Download Pre-built
+Check the [Releases](https://github.com/CoziSoftware/cozisAddon/releases) page or the [Actions](https://github.com/CoziSoftware/cozisAddon/actions) tab for automatically built JARs.
+
+#### Manual Build
+```bash
 git clone https://github.com/CoziSoftware/cozisAddon/
 cd cozisAddon/
 ./gradlew build
 ```
+
+The built JAR will be in `build/libs/`
+
+### Development
+
+This project uses GitHub Actions for automatic builds. Every push to any branch triggers a build, and the artifacts are named based on the version in `gradle.properties`.
+
+For managing multiple Minecraft versions, see [`.github/BRANCHING_GUIDE.md`](.github/BRANCHING_GUIDE.md).
 
 **Disclaimer:** This code is safe however I wouldn't trust what you download from a 2b2t player so if you feel inclined, please look over the codebase to ensure your own security.
