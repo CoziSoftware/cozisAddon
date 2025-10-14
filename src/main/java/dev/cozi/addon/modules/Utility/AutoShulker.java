@@ -145,7 +145,7 @@ public class AutoShulker extends Module {
         
         // Restore previous slot if needed
         if (previousSlot != -1 && mc.player != null) {
-            mc.player.getInventory().setSelectedSlot(previousSlot);
+            mc.player.getInventory().selectedSlot = previousSlot;
             previousSlot = -1;
         }
         
@@ -277,8 +277,8 @@ public class AutoShulker extends Module {
             shulkerSlot = emptyHotbarSlot;
         }
 
-        previousSlot = mc.player.getInventory().getSelectedSlot();
-        mc.player.getInventory().setSelectedSlot(shulkerSlot);
+        previousSlot = mc.player.getInventory().selectedSlot;
+        mc.player.getInventory().selectedSlot = shulkerSlot;
 
         // Determine placement position
         BlockPos playerPos = mc.player.getBlockPos();
