@@ -177,6 +177,10 @@ public class AutoShulker extends Module {
                     if (placeShulker()) {
                         currentState = State.OPENING;
                         delayCounter = 0;
+                        if (previousSlot != -1 && mc.player != null) {
+                            mc.player.getInventory().setSelectedSlot(previousSlot);
+                            previousSlot = -1;
+                        }
                     } else {
                         error("Failed to place shulker box!");
                         currentState = State.IDLE;
@@ -214,6 +218,10 @@ public class AutoShulker extends Module {
             case CLOSING -> {
                 if (autoClose.get()) {
                     mc.player.closeHandledScreen();
+                }
+                if (previousSlot != -1 && mc.player != null) {
+                    mc.player.getInventory().setSelectedSlot(previousSlot);
+                    previousSlot = -1;
                 }
                 currentState = State.IDLE;
                 shulkerPos = null;
@@ -277,7 +285,7 @@ public class AutoShulker extends Module {
             shulkerSlot = emptyHotbarSlot;
         }
 
-        previousSlot = mc.player.getInventory().getSelectedSlot();
+        previousSlot = mc.player.getInventory().selectedSlot;
         mc.player.getInventory().setSelectedSlot(shulkerSlot);
 
         // Determine placement position

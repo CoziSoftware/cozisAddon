@@ -8,6 +8,8 @@ import dev.cozi.addon.hud.DubCountGUI;
 import dev.cozi.addon.modules.Hunting.NewChunksPlus;
 import dev.cozi.addon.modules.Movement.AFKVanillaFly;
 import dev.cozi.addon.modules.Movement.ElytraRedeploy;
+import dev.cozi.addon.modules.Movement.GrimScaffold;
+import dev.cozi.addon.modules.Utility.GrimAirPlace;
 import dev.cozi.addon.modules.Hunting.StashFinderPlus;
 import dev.cozi.addon.modules.Hunting.TrailFollower;
 import dev.cozi.addon.modules.Movement.Pitch40Util;
@@ -51,11 +53,11 @@ public class Main extends MeteorAddon {
          Modules.get().add(new AntiSpam());
          Modules.get().add(new AutoLogPlus());
          Modules.get().add(new AFKVanillaFly());
-         Modules.get().add(new TrailFollower());
          Modules.get().add(new AutoShulker());
          Modules.get().add(new ElytraRedeploy());
          Modules.get().add(new DubCount());
-
+         Modules.get().add(new GrimScaffold());
+         Modules.get().add(new GrimAirPlace());
          // Only add TrailFollower if Baritone is available
          try {
              Class.forName("baritone.api.BaritoneAPI");
