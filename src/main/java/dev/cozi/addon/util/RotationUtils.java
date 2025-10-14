@@ -19,11 +19,7 @@ public class RotationUtils {
     private final List<RotationUtils.Rotation> requests = new CopyOnWriteArrayList<>();
     private float serverYaw, serverPitch;
     private float lastServerYaw, lastServerPitch;
-    private float prevYaw, prevPitch;
-    private float prevJumpYaw;
     private boolean rotate;
-    private boolean webJumpFix;
-    private boolean preJumpFix;
     private RotationUtils.Rotation rotation;
     private int rotateTicks;
     private boolean movementFix = true;
@@ -52,7 +48,6 @@ public class RotationUtils {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onTick(TickEvent.Pre event) {
         if (mc.player == null || mc.world == null) return;
-        webJumpFix = isInWeb();
         lastServerYaw = serverYaw;
         lastServerPitch = serverPitch;
         if (rotation != null) {
@@ -85,14 +80,31 @@ public class RotationUtils {
     @EventHandler
     public void onTickPost(TickEvent.Post event) {
         if (rotation != null && mc.player != null && movementFix) {
-            float forward = mc.player.input.movementForward;
-            float sideways = mc.player.input.movementSideways;
+            // Get current movement input from playerInput record
+            var playerInput = mc.player.input.playerInput;
+            float forward = playerInput.forward() ? 1.0f : (playerInput.backward() ? -1.0f : 0.0f);
+            float sideways = playerInput.left() ? 1.0f : (playerInput.right() ? -1.0f : 0.0f);
+            
             if (forward == 0.0f && sideways == 0.0f) return;
+            
+            // Calculate rotation delta and apply movement fix
             float delta = (mc.player.getYaw() - rotation.getYaw()) * MathHelper.RADIANS_PER_DEGREE;
             float cos = MathHelper.cos(delta);
             float sin = MathHelper.sin(delta);
-            mc.player.input.movementSideways = Math.round(sideways * cos - forward * sin);
-            mc.player.input.movementForward = Math.round(forward * cos + sideways * sin);
+            
+            // Calculate corrected movement values
+            float newSideways = sideways * cos - forward * sin;
+            float newForward = forward * cos + sideways * sin;
+            
+            // Apply the corrected movement by modifying velocity directly
+            Vec3d velocity = mc.player.getVelocity();
+            double speed = Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z);
+            if (speed > 0) {
+                double yawRad = Math.toRadians(rotation.getYaw());
+                double newX = -Math.sin(yawRad) * newForward + Math.cos(yawRad) * newSideways;
+                double newZ = Math.cos(yawRad) * newForward + Math.sin(yawRad) * newSideways;
+                mc.player.setVelocity(newX * speed, velocity.y, newZ * speed);
+            }
         }
     }
     public void setRotation(RotationUtils.Rotation rotation) {
@@ -206,14 +218,6 @@ public class RotationUtils {
             }
         }
         return rotationRequest;
-    }
-    private boolean isInWeb() {
-        if (mc.player == null || mc.world == null) return false;
-        try {
-            return mc.world.getBlockCollisions(mc.player, mc.player.getBoundingBox()).iterator().hasNext();
-        } catch (Exception e) {
-            return false;
-        }
     }
     public boolean getMovementFix() { return movementFix; }
     public void setMovementFix(boolean movementFix) { this.movementFix = movementFix; }

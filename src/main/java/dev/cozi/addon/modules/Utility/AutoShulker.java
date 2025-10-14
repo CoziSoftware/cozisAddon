@@ -1,6 +1,7 @@
 package dev.cozi.addon.modules.Utility;
 
 import dev.cozi.addon.Main;
+import dev.cozi.addon.mixin.accessor.PlayerInventoryAccessor;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
@@ -74,8 +75,8 @@ public class AutoShulker extends Module {
     // Filter Settings
     private final Setting<Boolean> keepHotbar = sgFilter.add(new BoolSetting.Builder()
         .name("keep-hotbar")
-        .description("Don't move items from the hotbar.")
-        .defaultValue(true)
+        .description("Don't move items from the hotbar. (Work In Progress)")
+        .defaultValue(false)
         .build()
     );
 
@@ -145,7 +146,7 @@ public class AutoShulker extends Module {
         
         // Restore previous slot if needed
         if (previousSlot != -1 && mc.player != null) {
-            mc.player.getInventory().setSelectedSlot(previousSlot);
+            ((PlayerInventoryAccessor) mc.player.getInventory()).setSelectedSlot(previousSlot);
             previousSlot = -1;
         }
         
@@ -178,7 +179,7 @@ public class AutoShulker extends Module {
                         currentState = State.OPENING;
                         delayCounter = 0;
                         if (previousSlot != -1 && mc.player != null) {
-                            mc.player.getInventory().setSelectedSlot(previousSlot);
+                            ((PlayerInventoryAccessor) mc.player.getInventory()).setSelectedSlot(previousSlot);
                             previousSlot = -1;
                         }
                     } else {
@@ -220,7 +221,7 @@ public class AutoShulker extends Module {
                     mc.player.closeHandledScreen();
                 }
                 if (previousSlot != -1 && mc.player != null) {
-                    mc.player.getInventory().setSelectedSlot(previousSlot);
+                    ((PlayerInventoryAccessor) mc.player.getInventory()).setSelectedSlot(previousSlot);
                     previousSlot = -1;
                 }
                 currentState = State.IDLE;
@@ -285,8 +286,9 @@ public class AutoShulker extends Module {
             shulkerSlot = emptyHotbarSlot;
         }
 
-        previousSlot = mc.player.getInventory().selectedSlot;
-        mc.player.getInventory().setSelectedSlot(shulkerSlot);
+        PlayerInventoryAccessor inventory = (PlayerInventoryAccessor) mc.player.getInventory();
+        previousSlot = inventory.getSelectedSlot();
+        inventory.setSelectedSlot(shulkerSlot);
 
         // Determine placement position
         BlockPos playerPos = mc.player.getBlockPos();

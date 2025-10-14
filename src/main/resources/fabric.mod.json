@@ -18,6 +18,7 @@
     ]
   },
   "mixins": [
+    "addon.mixins.json",
     "addon-meteor.mixins.json",
     "addon-xaero.mixins.json"
   ],

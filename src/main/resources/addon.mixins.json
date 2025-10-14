@@ -6,21 +6,7 @@
     "injectors": {
       "defaultRequire": 1
     },
-    "mixins": [    "WorldMixin",
-      "EntityMixin",
-      "ItemStackMixin",
-      "DoorBlockMixin",
-      "PlayerEntityMixin",
-      "GoatHornItemMixin",
-      "LivingEntityMixin",
-      "FireworkRocketEntityMixin",
-      "accessor.GameProfileAccessor",
-      "accessor.ClientConnectionAccessor",
-      "accessor.AnvilScreenHandlerAccessor",
-      "accessor.DisconnectS2CPacketAccessor",
-      "accessor.PlayerMoveC2SPacketAccessor",
-      "accessor.PlayerListS2CPacketAccessor",
-      "accessor.GrindstoneScreenHandlerAccessor",
-      "accessor.EntityTrackerUpdateS2CPacketAccessor"
+    "mixins": [
+      "accessor.PlayerInventoryAccessor"
     ]
   }
