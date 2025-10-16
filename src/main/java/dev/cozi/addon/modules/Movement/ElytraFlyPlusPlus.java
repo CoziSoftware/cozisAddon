@@ -43,7 +43,7 @@ public class ElytraFlyPlusPlus extends Module {
     private final Setting<Boolean> bounce = sgGeneral.add(new BoolSetting.Builder()
         .name("bounce")
         .description("Automatically does bounce efly.")
-        .defaultValue(false)
+        .defaultValue(true)
         .build()
     );
 

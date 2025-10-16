@@ -3,7 +3,7 @@ A 2b2t Meteor Client utility based addon.
 
 ### Original Modules
 **<ins>Utility</ins>**
-+ AutoLog Plus - A module that disconnects the player according to specific parameters (Based off of [Numby-hack]https://github.com/cqb13/Numby-hack))
++ AutoLog Plus - A module that disconnects the player according to specific parameters (Based off of [Numby-hack](https://github.com/cqb13/Numby-hack))
 + Auto Shulker - When your inventory is full it places and opens a shulker box and then puts your items in the shulker box
 
 **<ins>Movement</ins>**

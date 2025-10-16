@@ -22,6 +22,7 @@ import dev.cozi.addon.modules.Utility.AutoShulker;
 import dev.cozi.addon.modules.Utility.DiscordNotifications;
 import dev.cozi.addon.modules.Utility.DubCount;
 import dev.cozi.addon.modules.Utility.PortalMaker;
+import dev.cozi.addon.modules.Utility.ElytraSwap;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.systems.hud.Hud;
@@ -59,6 +60,7 @@ public class Main extends MeteorAddon {
          Modules.get().add(new DubCount());
          Modules.get().add(new GrimScaffold());
          Modules.get().add(new GrimAirPlace());
+         Modules.get().add(new ElytraSwap());
          
          // Only add modules that require Baritone if Baritone is available
          try {
