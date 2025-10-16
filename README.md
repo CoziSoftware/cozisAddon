@@ -5,7 +5,7 @@ A 2b2t Meteor Client utility based addon.
 **<ins>Utility</ins>**
 + AutoLog Plus - A module that disconnects the player according to specific parameters (Based off of [Numby-hack](https://github.com/cqb13/Numby-hack))
 + Auto Shulker - When your inventory is full it places and opens a shulker box and then puts your items in the shulker box
-
++ Elytra Swap - WORK IN PROGRESS (DOESN'T WORK YET)
 **<ins>Movement</ins>**
 + Elytra Redeploy - Jumps and flies away if you hit the ground with this enabled
 
