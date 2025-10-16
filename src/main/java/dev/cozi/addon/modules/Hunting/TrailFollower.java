@@ -231,13 +231,6 @@ public class TrailFollower extends Module
         .build()
     );
 
-    public final Setting<String> webhookLink = sgGeneral.add(new StringSetting.Builder()
-        .name("webhook-link")
-        .description("Will send all updates to the webhook link. Leave blank to disable.")
-        .defaultValue("")
-        .build()
-    );
-
     public final Setting<Integer> baritoneUpdateTicks = sgAdvanced.add(new IntSetting.Builder()
         .name("baritone-path-update-ticks")
         .description("The amount of ticks between updates to the baritone goal. Low values may cause high instability.")
@@ -253,7 +246,39 @@ public class TrailFollower extends Module
         .build()
     );
 
-    // TODO: Auto disconnect at certain chunk load speed
+    public final Setting<Boolean> autoDisconnectOnSpeed = sgGeneral.add(new BoolSetting.Builder()
+        .name("auto-disconnect-on-speed")
+        .description("Automatically disconnect when chunk load speed exceeds threshold.")
+        .defaultValue(false)
+        .build()
+    );
+
+    public final Setting<Double> maxChunkLoadSpeed = sgGeneral.add(new DoubleSetting.Builder()
+        .name("max-chunk-load-speed")
+        .description("Maximum allowed chunk load speed (chunks per second).")
+        .defaultValue(10.0)
+        .min(1.0)
+        .sliderMax(50.0)
+        .visible(() -> autoDisconnectOnSpeed.get())
+        .build()
+    );
+
+    public final Setting<Integer> speedCheckInterval = sgGeneral.add(new IntSetting.Builder()
+        .name("speed-check-interval")
+        .description("How often to check chunk load speed (in ticks).")
+        .defaultValue(20)
+        .min(5)
+        .sliderMax(100)
+        .visible(() -> autoDisconnectOnSpeed.get())
+        .build()
+    );
+
+    public final Setting<String> webhookLink = sgGeneral.add(new StringSetting.Builder()
+    .name("webhook-link")
+    .description("Will send all updates to the webhook link. Leave blank to disable.")
+    .defaultValue("")
+    .build()
+    );
 
     private boolean oldAutoFireworkValue;
 
@@ -268,6 +293,11 @@ public class TrailFollower extends Module
     private long lastFoundPossibleTrailTime;
 
     private double pathDistanceActual = pathDistance.get();
+
+    // Chunk load speed monitoring
+    private long lastSpeedCheckTime = 0;
+    private int chunksLoadedSinceLastCheck = 0;
+    private int speedCheckTickCounter = 0;
 
     private Cache<Long, Byte> seenChunksCache = Caffeine.newBuilder()
         .maximumSize(chunkCacheLength.get())
@@ -287,12 +317,18 @@ public class TrailFollower extends Module
         followingTrail = false;
         trail = new ArrayDeque<>();
         possibleTrail = new ArrayDeque<>();
+        // Reset speed monitoring
+        lastSpeedCheckTime = System.currentTimeMillis();
+        chunksLoadedSinceLastCheck = 0;
+        speedCheckTickCounter = 0;
     }
 
     @Override
     public void onActivate()
     {
         resetTrail();
+        // Initialize speed monitoring
+        lastSpeedCheckTime = System.currentTimeMillis();
         XaeroPlus.EVENT_BUS.register(this);
         if (mc.player != null && mc.world != null)
         {
@@ -430,6 +466,15 @@ public class TrailFollower extends Module
     private void onTick(TickEvent.Post event)
     {
         if (mc.player == null || mc.world == null) return;
+        
+        // Check chunk load speed if auto-disconnect is enabled
+        if (autoDisconnectOnSpeed.get()) {
+            speedCheckTickCounter++;
+            if (speedCheckTickCounter >= speedCheckInterval.get()) {
+                checkChunkLoadSpeed();
+                speedCheckTickCounter = 0;
+            }
+        }
         if (followingTrail && System.currentTimeMillis() - lastFoundTrailTime > trailTimeout.get())
         {
             resetTrail();
@@ -581,6 +626,11 @@ public class TrailFollower extends Module
         // Check that the chunk is actually mapped, and that it is an old chunk
         if (!isValidChunk(chunkPos, currentDimension)) return;
 
+        // Count chunks for speed monitoring
+        if (autoDisconnectOnSpeed.get()) {
+            chunksLoadedSinceLastCheck++;
+        }
+
         seenChunksCache.put(chunkLong, Byte.MAX_VALUE);
 
         // nether will get out of chunk render distance range of overworld. needs fix.
@@ -690,6 +740,7 @@ public class TrailFollower extends Module
                 currentDimension
             );
 
+        
         return isHighlighted && ((!is119NewChunk && !only112.get()) || is112OldChunk);
     }
 
@@ -716,6 +767,29 @@ public class TrailFollower extends Module
         {
             sendWebhook(webhookLink.get(), "TrailFollower", message, null, mc.player.getGameProfile().getName());
         }
+    }
+
+    private void checkChunkLoadSpeed()
+    {
+        long currentTime = System.currentTimeMillis();
+        long timeDiff = currentTime - lastSpeedCheckTime;
+        
+        if (timeDiff > 0) {
+            double chunksPerSecond = (chunksLoadedSinceLastCheck * 1000.0) / timeDiff;
+            
+            if (debug.get()) {
+                info("Chunk load speed: " + String.format("%.2f", chunksPerSecond) + " chunks/sec");
+            }
+            
+            if (chunksPerSecond > maxChunkLoadSpeed.get()) {
+                log("Chunk load speed exceeded threshold (" + String.format("%.2f", chunksPerSecond) + " > " + maxChunkLoadSpeed.get() + " chunks/sec). Disconnecting...");
+                mc.player.networkHandler.onDisconnect(new DisconnectS2CPacket(Text.literal("[TrailFollower] Chunk load speed exceeded threshold.")));
+            }
+        }
+        
+        // Reset counters for next check
+        lastSpeedCheckTime = currentTime;
+        chunksLoadedSinceLastCheck = 0;
     }
 
     public enum FollowMode

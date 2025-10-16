@@ -21,7 +21,7 @@ public class SearchArea extends Module {
     public final Setting<SearchAreaModes> chunkLoadMode = sgGeneral.add(new EnumSetting.Builder<SearchAreaModes>()
         .name("mode")
         .description("The mode chunks are loaded.")
-        .defaultValue(SearchAreaModes.Rectangle)
+        .defaultValue(SearchAreaModes.Spiral)
         .onModuleActivated(chunkMode -> onModeChanged(chunkMode.get()))
         .onChanged(this::onModeChanged)
         .build()
