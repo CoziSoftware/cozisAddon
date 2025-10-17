@@ -5,6 +5,7 @@ import dev.cozi.addon.hud.EntityList;
 import dev.cozi.addon.hud.TotemCount;
 import dev.cozi.addon.hud.CrystalCount;
 import dev.cozi.addon.hud.DubCountGUI;
+import dev.cozi.addon.hud.SignDisplay;
 import dev.cozi.addon.modules.Hunting.NewChunksPlus;
 import dev.cozi.addon.modules.Movement.AFKVanillaFly;
 import dev.cozi.addon.modules.Movement.ElytraRedeploy;
@@ -16,6 +17,7 @@ import dev.cozi.addon.modules.Hunting.TrailFollower;
 import dev.cozi.addon.modules.Movement.Pitch40Util;
 import dev.cozi.addon.modules.Movement.searcharea.SearchArea;
 import dev.cozi.addon.modules.Render.PearlOwner;
+import dev.cozi.addon.modules.Render.SignRender;
 import dev.cozi.addon.modules.Utility.AntiSpam;
 import dev.cozi.addon.modules.Utility.AutoLogPlus;
 import dev.cozi.addon.modules.Utility.AutoShulker;
@@ -51,6 +53,7 @@ public class Main extends MeteorAddon {
          Modules.get().add(new Pitch40Util());
          Modules.get().add(new NewChunksPlus());
          Modules.get().add(new PearlOwner());
+         Modules.get().add(new SignRender());
          Modules.get().add(new SearchArea());
          Modules.get().add(new AntiSpam());
          Modules.get().add(new AutoLogPlus());
@@ -80,6 +83,7 @@ public class Main extends MeteorAddon {
         Hud.get().register(TotemCount.INFO);
         Hud.get().register(CrystalCount.INFO);
         Hud.get().register(DubCountGUI.INFO);
+        Hud.get().register(SignDisplay.INFO);
     }
 
     @Override

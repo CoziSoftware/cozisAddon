@@ -7,6 +7,9 @@ A 2b2t Meteor Client utility based addon.
 + Auto Shulker - When your inventory is full it places and opens a shulker box and then puts your items in the shulker box
 + Elytra Swap - WORK IN PROGRESS (DOESN'T WORK YET)
 
+**<ins>Renders</ins>**
++ SignRender - Displays sign text above the sign and is visible through walls
+
 **<ins>Movement</ins>**
 + Elytra Redeploy - Jumps and flies away if you hit the ground with this enabled
 
@@ -14,6 +17,7 @@ A 2b2t Meteor Client utility based addon.
 + TotemCount - A HUD module that shows the amount of totems in your inventory
 + CrystalCount - A HUD module that shows the amount of end crystals in your inventory
 + Dub Count - A HUD module that shows what is output from the Dub Counter module 
++ Sign Display - A HUD module that displays all signs within render distance in a list
 
 ### Ported Modules
 **<ins>Utility</ins>**
