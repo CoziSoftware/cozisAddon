@@ -191,19 +191,98 @@ jobs:
           minecraft-version
           dependencies
 
-    - name: Build project
-      if: steps.changes.outputs.changed == 'true'
-      run: |
-        echo "Building project with Minecraft version ${{ steps.version.outputs.version }}"
-        ./gradlew build --no-daemon
+     - name: Build project
+       if: steps.changes.outputs.changed == 'true'
+       run: |
+         echo "Building project with Minecraft version ${{ steps.version.outputs.version }}"
+         ./gradlew clean build --no-daemon
+         echo "Build completed successfully"
 
-    - name: Upload build artifacts
-      if: steps.changes.outputs.changed == 'true' && always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: build-artifacts-${{ steps.version.outputs.version }}
-        path: build/libs/
-        retention-days: 7
+     - name: List build artifacts
+       if: steps.changes.outputs.changed == 'true'
+       run: |
+         echo "Build artifacts:"
+         ls -la build/libs/
+         echo "JAR files found:"
+         find build/libs/ -name "*.jar" -type f
+
+     - name: Upload build artifacts
+       if: steps.changes.outputs.changed == 'true' && always()
+       uses: actions/upload-artifact@v4
+       with:
+         name: build-artifacts-${{ steps.version.outputs.version }}
+         path: build/libs/
+         retention-days: 7
+
+     - name: Create GitHub Release
+       if: steps.changes.outputs.changed == 'true' && success()
+       id: create_release
+       uses: actions/create-release@v1
+       env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       with:
+         tag_name: v${{ steps.version.outputs.version }}-${{ github.run_number }}
+         release_name: cozisAddon v${{ steps.version.outputs.version }} Build #${{ github.run_number }}
+         body: |
+           ## 🚀 cozisAddon Release - Minecraft ${{ steps.version.outputs.version }}
+           
+           ### 📦 What's New
+           - **Minecraft Version**: Updated to ${{ steps.version.outputs.version }}
+           - **Build Number**: #${{ github.run_number }}
+           - **Build Date**: ${{ github.run_id }}
+           
+           ### 🔧 Changes Made
+           - ✅ Updated `minecraft_version` to `${{ steps.version.outputs.version }}`
+           - ✅ Updated `yarn_mappings` to `${{ steps.version.outputs.version }}+build.1`
+           - ✅ Updated `fabric_version` to `0.128.2+${{ steps.version.outputs.version }}`
+           - ✅ Updated `meteor_version` to `${{ steps.version.outputs.version }}-SNAPSHOT`
+           - ✅ Updated `baritone_version` to `${{ steps.version.outputs.version }}-SNAPSHOT`
+           - ✅ Updated `xaeroplus_version` to `2.28.1+fabric-${{ steps.version.outputs.version }}`
+           - ✅ Updated `xaeros_worldmap_version` to `1.39.12_Fabric_${{ steps.version.outputs.version }}`
+           - ✅ Updated `xaeros_minimap_version` to `25.2.10_Fabric_${{ steps.version.outputs.version }}`
+           
+           ### 📋 Installation Instructions
+           1. Download the appropriate JAR file for your Minecraft version
+           2. Place the JAR file in your mods folder
+           3. Ensure you have the required dependencies installed
+           4. Launch Minecraft and enjoy!
+           
+           ### 🛠️ Dependencies Required
+           - **Fabric Loader**: 0.17.3+
+           - **Fabric API**: 0.128.2+${{ steps.version.outputs.version }}
+           - **Meteor Client**: ${{ steps.version.outputs.version }}-SNAPSHOT
+           - **Baritone**: ${{ steps.version.outputs.version }}-SNAPSHOT (optional)
+           
+           ### 🤖 Automated Build
+           This release was created automatically by GitHub Actions.
+           
+           **Workflow**: [Update Minecraft Version](https://github.com/${{ github.repository }}/actions/workflows/update-minecraft-version.yml)
+           **Commit**: ${{ github.sha }}
+           **Branch**: ${{ github.ref_name }}
+         draft: false
+         prerelease: false
+
+     - name: Upload JAR to Release
+       if: steps.changes.outputs.changed == 'true' && success()
+       uses: actions/upload-release-asset@v1
+       env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       with:
+         upload_url: ${{ steps.create_release.outputs.upload_url }}
+         asset_path: build/libs/cozisaddon-${{ steps.version.outputs.version }}.jar
+         asset_name: cozisaddon-${{ steps.version.outputs.version }}.jar
+         asset_content_type: application/java-archive
+
+     - name: Upload Dev JAR to Release
+       if: steps.changes.outputs.changed == 'true' && success()
+       uses: actions/upload-release-asset@v1
+       env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       with:
+         upload_url: ${{ steps.create_release.outputs.upload_url }}
+         asset_path: build/libs/cozisaddon-${{ steps.version.outputs.version }}-dev.jar
+         asset_name: cozisaddon-${{ steps.version.outputs.version }}-dev.jar
+         asset_content_type: application/java-archive
 
     - name: Notify on success
       if: steps.changes.outputs.changed == 'true' && success()
