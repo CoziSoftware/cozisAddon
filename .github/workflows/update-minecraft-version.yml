@@ -1,0 +1,218 @@
+name: Update Minecraft Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_version:
+        description: 'Target Minecraft version'
+        required: true
+        default: '1.21.5'
+        type: choice
+        options:
+          - '1.21.4'
+          - '1.21.5'
+  schedule:
+    # Run every Monday at 9 AM UTC to check for version updates
+    - cron: '0 9 * * 1'
+  push:
+    branches:
+      - main
+    paths:
+      - 'gradle.properties'
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Configure Git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+
+    - name: Determine target version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "version=${{ github.event.inputs.target_version }}" >> $GITHUB_OUTPUT
+        else
+          # Check current version in gradle.properties
+          CURRENT_VERSION=$(grep "minecraft_version=" gradle.properties | cut -d'=' -f2)
+          echo "Current version: $CURRENT_VERSION"
+          
+          # Determine target version (switch between 1.21.4 and 1.21.5)
+          if [ "$CURRENT_VERSION" = "1.21.4" ]; then
+            TARGET_VERSION="1.21.5"
+          elif [ "$CURRENT_VERSION" = "1.21.5" ]; then
+            TARGET_VERSION="1.21.4"
+          else
+            # Default to 1.21.5 if current version is neither
+            TARGET_VERSION="1.21.5"
+          fi
+          
+          echo "Target version: $TARGET_VERSION"
+          echo "version=$TARGET_VERSION" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Update gradle.properties
+      run: |
+        TARGET_VERSION="${{ steps.version.outputs.version }}"
+        echo "Updating to Minecraft version: $TARGET_VERSION"
+        
+        # Update minecraft_version
+        sed -i "s/minecraft_version=.*/minecraft_version=$TARGET_VERSION/" gradle.properties
+        
+        # Update yarn_mappings based on version
+        if [ "$TARGET_VERSION" = "1.21.4" ]; then
+          sed -i "s/yarn_mappings=.*/yarn_mappings=1.21.4+build.1/" gradle.properties
+        elif [ "$TARGET_VERSION" = "1.21.5" ]; then
+          sed -i "s/yarn_mappings=.*/yarn_mappings=1.21.5+build.1/" gradle.properties
+        fi
+        
+        # Update fabric_version based on version
+        if [ "$TARGET_VERSION" = "1.21.4" ]; then
+          sed -i "s/fabric_version=.*/fabric_version=0.128.2+1.21.4/" gradle.properties
+        elif [ "$TARGET_VERSION" = "1.21.5" ]; then
+          sed -i "s/fabric_version=.*/fabric_version=0.128.2+1.21.5/" gradle.properties
+        fi
+        
+        # Update meteor_version based on version
+        if [ "$TARGET_VERSION" = "1.21.4" ]; then
+          sed -i "s/meteor_version=.*/meteor_version=1.21.4-SNAPSHOT/" gradle.properties
+        elif [ "$TARGET_VERSION" = "1.21.5" ]; then
+          sed -i "s/meteor_version=.*/meteor_version=1.21.5-SNAPSHOT/" gradle.properties
+        fi
+        
+        # Update baritone_version based on version
+        if [ "$TARGET_VERSION" = "1.21.4" ]; then
+          sed -i "s/baritone_version=.*/baritone_version=1.21.4-SNAPSHOT/" gradle.properties
+        elif [ "$TARGET_VERSION" = "1.21.5" ]; then
+          sed -i "s/baritone_version=.*/baritone_version=1.21.5-SNAPSHOT/" gradle.properties
+        fi
+        
+        # Update XaeroPlus version based on version
+        if [ "$TARGET_VERSION" = "1.21.4" ]; then
+          sed -i "s/xaeroplus_version=.*/xaeroplus_version=2.28.1+fabric-1.21.4/" gradle.properties
+        elif [ "$TARGET_VERSION" = "1.21.5" ]; then
+          sed -i "s/xaeroplus_version=.*/xaeroplus_version=2.28.1+fabric-1.21.5/" gradle.properties
+        fi
+        
+        # Update XaeroWorldmap version based on version
+        if [ "$TARGET_VERSION" = "1.21.4" ]; then
+          sed -i "s/xaeros_worldmap_version=.*/xaeros_worldmap_version=1.39.12_Fabric_1.21.4/" gradle.properties
+        elif [ "$TARGET_VERSION" = "1.21.5" ]; then
+          sed -i "s/xaeros_worldmap_version=.*/xaeros_worldmap_version=1.39.12_Fabric_1.21.5/" gradle.properties
+        fi
+        
+        # Update XaeroMinimap version based on version
+        if [ "$TARGET_VERSION" = "1.21.4" ]; then
+          sed -i "s/xaeros_minimap_version=.*/xaeros_minimap_version=25.2.10_Fabric_1.21.4/" gradle.properties
+        elif [ "$TARGET_VERSION" = "1.21.5" ]; then
+          sed -i "s/xaeros_minimap_version=.*/xaeros_minimap_version=25.2.10_Fabric_1.21.5/" gradle.properties
+        fi
+        
+        echo "Updated gradle.properties:"
+        cat gradle.properties
+
+    - name: Check for changes
+      id: changes
+      run: |
+        if git diff --quiet; then
+          echo "No changes detected"
+          echo "changed=false" >> $GITHUB_OUTPUT
+        else
+          echo "Changes detected"
+          echo "changed=true" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Commit and push changes
+      if: steps.changes.outputs.changed == 'true'
+      run: |
+        TARGET_VERSION="${{ steps.version.outputs.version }}"
+        git add gradle.properties
+        git commit -m "Update Minecraft version to $TARGET_VERSION
+        
+        - Updated minecraft_version to $TARGET_VERSION
+        - Updated yarn_mappings to $TARGET_VERSION+build.1
+        - Updated fabric_version to 0.128.2+$TARGET_VERSION
+        - Updated meteor_version to $TARGET_VERSION-SNAPSHOT
+        - Updated baritone_version to $TARGET_VERSION-SNAPSHOT
+        - Updated XaeroPlus version to 2.28.1+fabric-$TARGET_VERSION
+        - Updated XaeroWorldmap version to 1.39.12_Fabric_$TARGET_VERSION
+        - Updated XaeroMinimap version to 25.2.10_Fabric_$TARGET_VERSION
+        
+        Automated by GitHub Actions"
+        
+        git push
+
+    - name: Create Pull Request
+      if: steps.changes.outputs.changed == 'true' && github.event_name == 'schedule'
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "Update Minecraft version to ${{ steps.version.outputs.version }}"
+        title: "🔄 Automated Minecraft Version Update to ${{ steps.version.outputs.version }}"
+        body: |
+          ## 🔄 Automated Minecraft Version Update
+          
+          This PR automatically updates the Minecraft version from the previous version to **${{ steps.version.outputs.version }}**.
+          
+          ### Changes Made:
+          - ✅ Updated `minecraft_version` to `${{ steps.version.outputs.version }}`
+          - ✅ Updated `yarn_mappings` to `${{ steps.version.outputs.version }}+build.1`
+          - ✅ Updated `fabric_version` to `0.128.2+${{ steps.version.outputs.version }}`
+          - ✅ Updated `meteor_version` to `${{ steps.version.outputs.version }}-SNAPSHOT`
+          - ✅ Updated `baritone_version` to `${{ steps.version.outputs.version }}-SNAPSHOT`
+          - ✅ Updated `xaeroplus_version` to `2.28.1+fabric-${{ steps.version.outputs.version }}`
+          - ✅ Updated `xaeros_worldmap_version` to `1.39.12_Fabric_${{ steps.version.outputs.version }}`
+          - ✅ Updated `xaeros_minimap_version` to `25.2.10_Fabric_${{ steps.version.outputs.version }}`
+          
+          ### 🤖 Automated by GitHub Actions
+          This PR was created automatically by the [Update Minecraft Version](https://github.com/${{ github.repository }}/actions/workflows/update-minecraft-version.yml) workflow.
+          
+          ### ⚠️ Manual Review Required
+          Please review the changes and test the build before merging.
+        branch: update-minecraft-${{ steps.version.outputs.version }}
+        delete-branch: true
+        labels: |
+          automated
+          minecraft-version
+          dependencies
+
+    - name: Build project
+      if: steps.changes.outputs.changed == 'true'
+      run: |
+        echo "Building project with Minecraft version ${{ steps.version.outputs.version }}"
+        ./gradlew build --no-daemon
+
+    - name: Upload build artifacts
+      if: steps.changes.outputs.changed == 'true' && always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts-${{ steps.version.outputs.version }}
+        path: build/libs/
+        retention-days: 7
+
+    - name: Notify on success
+      if: steps.changes.outputs.changed == 'true' && success()
+      run: |
+        echo "✅ Successfully updated Minecraft version to ${{ steps.version.outputs.version }}"
+        echo "Build completed successfully"
+
+    - name: Notify on failure
+      if: failure()
+      run: |
+        echo "❌ Failed to update Minecraft version"
+        echo "Please check the logs for more details"

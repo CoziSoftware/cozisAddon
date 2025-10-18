@@ -220,6 +220,15 @@ public class ElytraSwap extends Module {
         stageTimer++;
         if (stageTimer < 5) return;
         
+        // Safety check to prevent infinite loops
+        if (stageTimer > 100) {
+            if (notifySwap.get()) {
+                info("Swap operation timed out, resetting");
+            }
+            resetSwapState();
+            return;
+        }
+        
         // Validate that we still have a valid target slot
         if (targetSlot < 0 || targetSlot >= 36) {
             resetSwapState();
@@ -266,12 +275,27 @@ public class ElytraSwap extends Module {
                 }
                 // Equip the elytra from the target slot
                 InvUtils.swap(targetSlot, false);
+                // Use right-click to equip the elytra
+                mc.options.useKey.setPressed(true);
                 mc.interactionManager.interactItem(mc.player, net.minecraft.util.Hand.MAIN_HAND);
+                mc.options.useKey.setPressed(false);
                 InvUtils.swapBack();
                 swapStage = 3;
                 stageTimer = 0;
             }
             case 3 -> {
+                // Validate that the swap was successful
+                ItemStack newChest = mc.player.getEquippedStack(EquipmentSlot.CHEST);
+                if (!newChest.getItem().equals(Items.ELYTRA)) {
+                    // Swap failed, reset and try again later
+                    resetSwapState();
+                    cooldownTimer = swapCooldown.get() / 2; // Shorter cooldown for retry
+                    if (notifySwap.get()) {
+                        info("Elytra swap failed, will retry later");
+                    }
+                    return;
+                }
+                
                 if (newElytraOriginalSlot >= 9) {
                     InvUtils.move().fromHotbar(targetSlot).to(newElytraOriginalSlot);
                     if (!hotbarOriginalItem.isEmpty()) {
@@ -280,13 +304,12 @@ public class ElytraSwap extends Module {
                         return;
                     }
                 }
+                
                 if (notifySwap.get()) {
-                    ItemStack newChest = mc.player.getEquippedStack(EquipmentSlot.CHEST);
-                    if (newChest.getItem().equals(Items.ELYTRA)) {
-                        int newDurability = newChest.getMaxDamage() - newChest.getDamage();
-                        info("Swapped to elytra with " + newDurability + " durability");
-                    }
+                    int newDurability = newChest.getMaxDamage() - newChest.getDamage();
+                    info("Successfully swapped to elytra with " + newDurability + " durability");
                 }
+                
                 needsSwap = false;
                 swapStage = 0;
                 stageTimer = 0;
@@ -324,9 +347,13 @@ public class ElytraSwap extends Module {
 
     private void handleCombatProtection() {
         if (mc.player == null) return;
-        if (mc.player.hurtTime > 0 && mc.player.hurtTime > lastHurtTime) {
+        
+        // Check if player was recently hurt
+        if (mc.player.hurtTime > 0 && mc.player.hurtTime != lastHurtTime) {
             lastHurtTime = mc.player.hurtTime;
             ItemStack chestItem = mc.player.getEquippedStack(EquipmentSlot.CHEST);
+            
+            // If wearing elytra and not already in protection mode
             if (chestItem.getItem().equals(Items.ELYTRA) && !protectionActive) {
                 int bestChestplate = findBestChestplate();
                 if (bestChestplate != -1) {
@@ -341,12 +368,10 @@ public class ElytraSwap extends Module {
                         info("Swapping to chestplate for protection!");
                     }
                 }
-            } else if (protectionActive) {
+            } else if (protectionActive && !chestItem.getItem().equals(Items.ELYTRA)) {
+                // Reset protection timer if we get hit while wearing chestplate
                 protectionTimer = hitProtectionDuration.get();
             }
-        }
-        if (mc.player.hurtTime < lastHurtTime) {
-            lastHurtTime = mc.player.hurtTime;
         }
         if (needsChestplateSwap) {
             processChestplateSwap();
@@ -382,6 +407,18 @@ public class ElytraSwap extends Module {
     private void processChestplateSwap() {
         stageTimer++;
         if (stageTimer < 3) return;
+        
+        // Safety check to prevent infinite loops
+        if (stageTimer > 100) {
+            if (notifySwap.get()) {
+                info("Chestplate swap operation timed out, resetting");
+            }
+            needsChestplateSwap = false;
+            chestplateSwapStage = 0;
+            stageTimer = 0;
+            chestplateSlot = -1;
+            return;
+        }
         switch (chestplateSwapStage) {
             case 1 -> {
                 if (chestplateSlot >= 9) {
@@ -408,7 +445,10 @@ public class ElytraSwap extends Module {
                 }
                 // Equip the chestplate from the target slot
                 InvUtils.swap(chestplateSlot, false);
+                // Use right-click to equip the chestplate
+                mc.options.useKey.setPressed(true);
                 mc.interactionManager.interactItem(mc.player, net.minecraft.util.Hand.MAIN_HAND);
+                mc.options.useKey.setPressed(false);
                 InvUtils.swapBack();
                 chestplateSwapStage = 3;
                 stageTimer = 0;
@@ -418,15 +458,26 @@ public class ElytraSwap extends Module {
                 chestplateSwapStage = 0;
                 stageTimer = 0;
                 chestplateSlot = -1;
+                
                 // Check if we successfully equipped the item
                 ItemStack chestItem = mc.player.getEquippedStack(EquipmentSlot.CHEST);
                 if (chestItem.getItem().equals(Items.ELYTRA)) {
                     // Successfully swapped back to elytra
                     protectionActive = false;
                     storedElytra = ItemStack.EMPTY;
-                } else if (isChestplateItem(chestItem)) {
+                    if (notifySwap.get()) {
+                        info("Successfully swapped back to elytra");
+                    }
+                } else if (isChestplateItem(chestItem) && !chestItem.getItem().equals(Items.ELYTRA)) {
                     // Successfully equipped chestplate, protection is active
-                    // Don't clear protection here, let the timer handle it
+                    if (notifySwap.get()) {
+                        info("Successfully equipped chestplate for protection");
+                    }
+                } else {
+                    // Swap failed
+                    if (notifySwap.get()) {
+                        info("Chestplate swap failed");
+                    }
                 }
             }
         }

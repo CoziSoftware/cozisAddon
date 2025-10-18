@@ -9,7 +9,6 @@ import dev.cozi.addon.hud.SignDisplay;
 import dev.cozi.addon.modules.Hunting.NewChunksPlus;
 import dev.cozi.addon.modules.Movement.AFKVanillaFly;
 import dev.cozi.addon.modules.Movement.ElytraRedeploy;
-import dev.cozi.addon.modules.Movement.ElytraFlyPlusPlus;
 import dev.cozi.addon.modules.Movement.GrimScaffold;
 import dev.cozi.addon.modules.Utility.GrimAirPlace;
 import dev.cozi.addon.modules.Hunting.StashFinderPlus;
@@ -25,6 +24,7 @@ import dev.cozi.addon.modules.Utility.DiscordNotifications;
 import dev.cozi.addon.modules.Utility.DubCount;
 import dev.cozi.addon.modules.Utility.PortalMaker;
 import dev.cozi.addon.modules.Utility.ElytraSwap;
+import dev.cozi.addon.modules.Movement.PhasePlus;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.systems.hud.Hud;
@@ -64,15 +64,15 @@ public class Main extends MeteorAddon {
          Modules.get().add(new GrimScaffold());
          Modules.get().add(new GrimAirPlace());
          Modules.get().add(new ElytraSwap());
+         Modules.get().add(new PhasePlus());
          
          // Only add modules that require Baritone if Baritone is available
          try {
-             Class.forName("baritone.api.BaritoneAPI");
-             Modules.get().add(new ElytraFlyPlusPlus());
+             Class.forName("baritone.api.BaritoneAPI");;
              Modules.get().add(new TrailFollower());
-             LOG.info("ElytraFlyPlusPlus and TrailFollower loaded (Baritone detected)");
+             LOG.info("TrailFollower loaded (Baritone detected)");
          } catch (ClassNotFoundException e) {
-             LOG.info("ElytraFlyPlusPlus and TrailFollower not loaded (Baritone not found)");
+             LOG.info("TrailFollower not loaded (Baritone not found)");
          }
          
         // Commands
