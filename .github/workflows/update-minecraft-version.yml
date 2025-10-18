@@ -76,14 +76,14 @@ jobs:
         
         # Update yarn_mappings based on version
         if [ "$TARGET_VERSION" = "1.21.4" ]; then
-          sed -i "s/yarn_mappings=.*/yarn_mappings=1.21.4+build.1/" gradle.properties
+          sed -i "s/yarn_mappings=.*/yarn_mappings=1.21.4+build.8/" gradle.properties
         elif [ "$TARGET_VERSION" = "1.21.5" ]; then
           sed -i "s/yarn_mappings=.*/yarn_mappings=1.21.5+build.1/" gradle.properties
         fi
         
         # Update fabric_version based on version
         if [ "$TARGET_VERSION" = "1.21.4" ]; then
-          sed -i "s/fabric_version=.*/fabric_version=0.128.2+1.21.4/" gradle.properties
+          sed -i "s/fabric_version=.*/fabric_version=0.119.4+1.21.4/" gradle.properties
         elif [ "$TARGET_VERSION" = "1.21.5" ]; then
           sed -i "s/fabric_version=.*/fabric_version=0.128.2+1.21.5/" gradle.properties
         fi
