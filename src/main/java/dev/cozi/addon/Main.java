@@ -63,8 +63,6 @@ public class Main extends MeteorAddon {
          Modules.get().add(new DubCount());
          Modules.get().add(new GrimScaffold());
          Modules.get().add(new GrimAirPlace());
-         Modules.get().add(new ElytraSwap());
-         Modules.get().add(new PhasePlus());
          
          // Only add modules that require Baritone if Baritone is available
          try {
