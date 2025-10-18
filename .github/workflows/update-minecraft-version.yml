@@ -191,39 +191,39 @@ jobs:
           minecraft-version
           dependencies
 
-     - name: Build project
-       if: steps.changes.outputs.changed == 'true'
-       run: |
-         echo "Building project with Minecraft version ${{ steps.version.outputs.version }}"
-         ./gradlew clean build --no-daemon
-         echo "Build completed successfully"
+    - name: Build project
+      if: steps.changes.outputs.changed == 'true'
+      run: |
+        echo "Building project with Minecraft version ${{ steps.version.outputs.version }}"
+        ./gradlew clean build --no-daemon
+        echo "Build completed successfully"
 
-     - name: List build artifacts
-       if: steps.changes.outputs.changed == 'true'
-       run: |
-         echo "Build artifacts:"
-         ls -la build/libs/
-         echo "JAR files found:"
-         find build/libs/ -name "*.jar" -type f
+    - name: List build artifacts
+      if: steps.changes.outputs.changed == 'true'
+      run: |
+        echo "Build artifacts:"
+        ls -la build/libs/
+        echo "JAR files found:"
+        find build/libs/ -name "*.jar" -type f
 
-     - name: Upload build artifacts
-       if: steps.changes.outputs.changed == 'true' && always()
-       uses: actions/upload-artifact@v4
-       with:
-         name: build-artifacts-${{ steps.version.outputs.version }}
-         path: build/libs/
-         retention-days: 7
+    - name: Upload build artifacts
+      if: steps.changes.outputs.changed == 'true' && always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts-${{ steps.version.outputs.version }}
+        path: build/libs/
+        retention-days: 7
 
-     - name: Create GitHub Release
-       if: steps.changes.outputs.changed == 'true' && success()
-       id: create_release
-       uses: actions/create-release@v1
-       env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-       with:
-         tag_name: v${{ steps.version.outputs.version }}-${{ github.run_number }}
-         release_name: cozisAddon v${{ steps.version.outputs.version }} Build #${{ github.run_number }}
-         body: |
+    - name: Create GitHub Release
+      if: steps.changes.outputs.changed == 'true' && success()
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.version.outputs.version }}-${{ github.run_number }}
+        release_name: cozisAddon v${{ steps.version.outputs.version }} Build #${{ github.run_number }}
+        body: |
            ## 🚀 cozisAddon Release - Minecraft ${{ steps.version.outputs.version }}
            
            ### 📦 What's New
@@ -259,30 +259,30 @@ jobs:
            **Workflow**: [Update Minecraft Version](https://github.com/${{ github.repository }}/actions/workflows/update-minecraft-version.yml)
            **Commit**: ${{ github.sha }}
            **Branch**: ${{ github.ref_name }}
-         draft: false
-         prerelease: false
+        draft: false
+        prerelease: false
 
-     - name: Upload JAR to Release
-       if: steps.changes.outputs.changed == 'true' && success()
-       uses: actions/upload-release-asset@v1
-       env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-       with:
-         upload_url: ${{ steps.create_release.outputs.upload_url }}
-         asset_path: build/libs/cozisaddon-${{ steps.version.outputs.version }}.jar
-         asset_name: cozisaddon-${{ steps.version.outputs.version }}.jar
-         asset_content_type: application/java-archive
+    - name: Upload JAR to Release
+      if: steps.changes.outputs.changed == 'true' && success()
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/libs/cozisaddon-${{ steps.version.outputs.version }}.jar
+        asset_name: cozisaddon-${{ steps.version.outputs.version }}.jar
+        asset_content_type: application/java-archive
 
-     - name: Upload Dev JAR to Release
-       if: steps.changes.outputs.changed == 'true' && success()
-       uses: actions/upload-release-asset@v1
-       env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-       with:
-         upload_url: ${{ steps.create_release.outputs.upload_url }}
-         asset_path: build/libs/cozisaddon-${{ steps.version.outputs.version }}-dev.jar
-         asset_name: cozisaddon-${{ steps.version.outputs.version }}-dev.jar
-         asset_content_type: application/java-archive
+    - name: Upload Dev JAR to Release
+      if: steps.changes.outputs.changed == 'true' && success()
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/libs/cozisaddon-${{ steps.version.outputs.version }}-dev.jar
+        asset_name: cozisaddon-${{ steps.version.outputs.version }}-dev.jar
+        asset_content_type: application/java-archive
 
     - name: Notify on success
       if: steps.changes.outputs.changed == 'true' && success()
