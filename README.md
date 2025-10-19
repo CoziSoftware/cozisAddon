@@ -21,6 +21,8 @@ A 2b2t Meteor Client utility based addon.
 + CrystalCount - A HUD module that shows the amount of end crystals in your inventory
 + Dub Count - A HUD module that shows what is output from the Dub Counter module 
 + Sign Display - A HUD module that displays all signs within render distance in a list
++ ETA - Displays the estimated time left to reach the baritone goal based on current speed.
++ Lag Detector - Displays the server's TPS and if there are lagbacks also shows a lag warning when lagging
 
 ### Ported Modules
 **<ins>Utility</ins>**
