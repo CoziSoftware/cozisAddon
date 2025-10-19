@@ -11,6 +11,7 @@ A 2b2t Meteor Client utility based addon.
 
 **<ins>Renders</ins>**
 + SignRender - Displays sign text above the sign and is visible through walls
++ ChestESP - An ESP for chests/double chests that have shulkers inside them and has a memory of chests in render distance
 
 **<ins>Movement</ins>**
 + Elytra Redeploy - Jumps and flies away if you hit the ground with this enabled
