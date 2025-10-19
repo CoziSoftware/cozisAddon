@@ -15,6 +15,7 @@ import dev.cozi.addon.modules.Hunting.StashFinderPlus;
 import dev.cozi.addon.modules.Hunting.TrailFollower;
 import dev.cozi.addon.modules.Movement.Pitch40Util;
 import dev.cozi.addon.modules.Movement.searcharea.SearchArea;
+import dev.cozi.addon.modules.Render.ChestESP;
 import dev.cozi.addon.modules.Render.PearlOwner;
 import dev.cozi.addon.modules.Render.SignRender;
 import dev.cozi.addon.modules.Utility.AntiSpam;
@@ -52,6 +53,7 @@ public class Main extends MeteorAddon {
          Modules.get().add(new StashFinderPlus());
          Modules.get().add(new Pitch40Util());
          Modules.get().add(new NewChunksPlus());
+         Modules.get().add(new ChestESP());
          Modules.get().add(new PearlOwner());
          Modules.get().add(new SignRender());
          Modules.get().add(new SearchArea());
