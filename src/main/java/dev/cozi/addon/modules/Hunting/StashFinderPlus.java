@@ -275,10 +275,10 @@ public class StashFinderPlus extends Module
                     switch (notificationMode.get())
                     {
                         case Chat -> info("Found stash at (highlight)%s(default), (highlight)%s(default).", chunk.x, chunk.z);
-                        case Toast -> mc.getToastManager().add(new MeteorToast(Items.CHEST, title, "Found Stash!"));
+                        case Toast -> mc.getToastManager().add(new MeteorToast.Builder(title).build());
                         case Both -> {
                             info("Found stash at (highlight)%s(default), (highlight)%s(default).", chunk.x, chunk.z);
-                            mc.getToastManager().add(new MeteorToast(Items.CHEST, title, "Found Stash!"));
+                            mc.getToastManager().add(new MeteorToast.Builder(title).build());
                         }
                     }
                 }

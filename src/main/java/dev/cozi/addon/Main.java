@@ -6,6 +6,8 @@ import dev.cozi.addon.hud.TotemCount;
 import dev.cozi.addon.hud.CrystalCount;
 import dev.cozi.addon.hud.DubCountGUI;
 import dev.cozi.addon.hud.SignDisplay;
+import dev.cozi.addon.hud.ETA;
+import dev.cozi.addon.hud.LagDetector;
 import dev.cozi.addon.modules.Hunting.NewChunksPlus;
 import dev.cozi.addon.modules.Movement.AFKVanillaFly;
 import dev.cozi.addon.modules.Movement.ElytraRedeploy;
@@ -86,6 +88,8 @@ public class Main extends MeteorAddon {
         Hud.get().register(CrystalCount.INFO);
         Hud.get().register(DubCountGUI.INFO);
         Hud.get().register(SignDisplay.INFO);
+        Hud.get().register(ETA.INFO);
+        Hud.get().register(LagDetector.INFO);
     }
 
     @Override
