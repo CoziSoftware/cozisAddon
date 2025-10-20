@@ -39,7 +39,7 @@ A 2b2t Meteor Client utility based addon.
 **<ins>Hunting</ins>**
 + StashFinderPlus - ported from [Jeff Mod](https://github.com/miles352/meteor-stashhunting-addon) - **I added the ability to bulk add potential stashes to waypoint, auto-disconnect when a stash is found and added more information when a Discord webhook is sent.**
 + NewChunksPlus - ported from [Trouser Streak](https://github.com/etianl/Trouser-Streak)
-+ TrailFollower - originally from [WarriorLost](https://github.com/WarriorLost) - **I added an option to auto disconnect depending on chunk loading speeds**
++ TrailFollower - originally from [WarriorLost](https://github.com/WarriorLost) - **I added an option to auto disconnect depending on chunk loading speeds and a cardinal direction priority mode**
 
 **<ins>Movement</ins>**
 + Pitch40Util - ported from [Jeff Mod](https://github.com/miles352/meteor-stashhunting-addon)

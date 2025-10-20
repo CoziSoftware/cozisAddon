@@ -170,6 +170,13 @@ public class TrailFollower extends Module
         .build()
     );
 
+    public final Setting<CardinalDirection> cardinalPriority = sgGeneral.add(new EnumSetting.Builder<CardinalDirection>()
+        .name("cardinal-priority")
+        .description("Prioritize chunks in a specific cardinal direction. Set to NONE to disable cardinal direction prioritization.")
+        .defaultValue(CardinalDirection.NONE)
+        .build()
+    );
+
     public final Setting<Integer> directionWeightingMultiplier = sgAdvanced.add(new IntSetting.Builder()
         .name("direction-weighting-multiplier")
         .description("The multiplier for how much weight should be given to chunks in the direction specified. Values are capped to be in the range [2, maxTrailLength].")
@@ -180,7 +187,7 @@ public class TrailFollower extends Module
         .build()
     );
 
-    public final Setting<Boolean> only112 = sgAdvanced.add(new BoolSetting.Builder()
+    public final Setting<Boolean> only112 = sgGeneral.add(new BoolSetting.Builder()
         .name("follow-only-1.12")
         .description("Will only follow 1.12 chunks and will ignore other ones.")
         .defaultValue(false)
@@ -380,7 +387,8 @@ public class TrailFollower extends Module
                     if (!pitch40UtilModule.isActive()) {
                         pitch40UtilModule.toggle();
                         if (pitch40Firework.get()) {
-                            Setting<Boolean> setting = ((Setting<Boolean>) pitch40UtilModule.settings.get("auto-firework"));
+                            @SuppressWarnings("unchecked")
+                            Setting<Boolean> setting = (Setting<Boolean>) pitch40UtilModule.settings.get("auto-firework");
                             info("Auto Firework enabled, if you want to change the velocity threshold or the firework cooldown check the settings under Pitch40Util.");
                             oldAutoFireworkValue = setting.get();
                             setting.set(true);
@@ -441,10 +449,15 @@ public class TrailFollower extends Module
                     if (pitch40UtilModule.isActive()) {
                         pitch40UtilModule.toggle();
                     }
-                    ((Setting<Boolean>) pitch40UtilModule.settings.get("auto-firework")).set(oldAutoFireworkValue);
+                    @SuppressWarnings("unchecked")
+                    Setting<Boolean> setting = (Setting<Boolean>) pitch40UtilModule.settings.get("auto-firework");
+                    setting.set(oldAutoFireworkValue);
                 }
                 break;
             }
+            case AUTO:
+                // AUTO mode doesn't need cleanup as it's determined at activation
+                break;
         }
     }
 
@@ -578,6 +591,9 @@ public class TrailFollower extends Module
                 mc.player.setYaw(Utils.smoothRotation(getActualYaw(mc.player.getYaw()), targetYaw, rotateScaling.get()));
                 break;
             }
+            case AUTO:
+                // AUTO mode is resolved to either BARITONE or YAWLOCK at activation
+                break;
         }
 
     }
@@ -676,7 +692,20 @@ public class TrailFollower extends Module
             trail.pollFirst();
         }
 
-        if (angleDiff > 0 && angleDiff < 90 && directionWeighting.get() == DirectionWeighting.LEFT)
+        // Check for cardinal direction priority first
+        boolean isCardinalPriority = isChunkInCardinalDirection(pos, mc.player.getPos());
+        
+        if (isCardinalPriority)
+        {
+            // Weight chunks in the prioritized cardinal direction
+            for (int i = 0; i < directionWeightingMultiplier.get() - 1; i++)
+            {
+                trail.pollFirst();
+                trail.add(pos);
+            }
+            trail.add(pos);
+        }
+        else if (angleDiff > 0 && angleDiff < 90 && directionWeighting.get() == DirectionWeighting.LEFT)
         {
 
             for (int i = 0; i < directionWeightingMultiplier.get() - 1; i++)
@@ -742,6 +771,27 @@ public class TrailFollower extends Module
 
         
         return isHighlighted && ((!is119NewChunk && !only112.get()) || is112OldChunk);
+    }
+
+    private boolean isChunkInCardinalDirection(Vec3d chunkPos, Vec3d playerPos)
+    {
+        if (cardinalPriority.get() == null || cardinalPriority.get() == CardinalDirection.NONE) return false;
+        
+        double deltaX = chunkPos.x - playerPos.x;
+        double deltaZ = chunkPos.z - playerPos.z;
+        
+        switch (cardinalPriority.get()) {
+            case NORTH:
+                return deltaZ < 0; // Negative Z is North
+            case SOUTH:
+                return deltaZ > 0; // Positive Z is South
+            case EAST:
+                return deltaX > 0; // Positive X is East
+            case WEST:
+                return deltaX < 0; // Negative X is West
+            default:
+                return false;
+        }
     }
 
     // not using this method now but will keep it in case
@@ -811,5 +861,14 @@ public class TrailFollower extends Module
         DISABLE,
         FLY_TOWARDS_YAW,
         DISCONNECT
+    }
+
+    public enum CardinalDirection
+    {
+        NONE,
+        NORTH,
+        SOUTH,
+        EAST,
+        WEST
     }
 }
