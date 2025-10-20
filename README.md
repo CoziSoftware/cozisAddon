@@ -31,6 +31,7 @@ A 2b2t Meteor Client utility based addon.
 + AntiSpam - ported from [Asteroide](https://github.com/asteroide-development/Asteroide)
 + Dub Counter - ported from [IKEA](https://github.com/Nooniboi/Public-Ikea) - **I changed this module a bit to allow the HUD element to work properly**
 + GrimAirPlace - ported from [Jeff Mod](https://github.com/miles352/meteor-stashhunting-addon)
++ Map Exporter - ported from [VexTheIV](https://github.com/Vextheiv/MapArtExporter)
 
 **<ins>Renders</ins>**
 + PearlOwner - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
