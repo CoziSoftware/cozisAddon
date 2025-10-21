@@ -17,11 +17,11 @@ public class ElytraSwap extends Module {
     // General Settings
     private final Setting<Integer> durabilityThreshold = sgGeneral.add(new IntSetting.Builder()
         .name("durability-threshold")
-        .description("Swap elytra when durability drops below this value.")
+        .description("Swap elytra when durability drops below this percentage.")
         .defaultValue(10)
         .min(1)
         .max(100)
-        .sliderRange(1, 50)
+        .sliderRange(1, 100)
         .build()
     );
 
@@ -176,22 +176,26 @@ public class ElytraSwap extends Module {
             return;
         }
         int currentDurability = chestItem.getMaxDamage() - chestItem.getDamage();
-        if (currentDurability <= durabilityThreshold.get()) {
+        int maxDurability = chestItem.getMaxDamage();
+        int durabilityPercentage = (int) ((double) currentDurability / maxDurability * 100);
+        if (durabilityPercentage <= durabilityThreshold.get()) {
             initiateSwap();
         }
     }
 
     private void initiateSwap() {
         int bestSlot = -1;
-        int bestDurability = durabilityThreshold.get();
+        int bestDurabilityPercentage = durabilityThreshold.get();
         
         // Find the best elytra in inventory
         for (int i = 0; i < 36; i++) {
             ItemStack stack = mc.player.getInventory().getStack(i);
             if (stack.getItem().equals(Items.ELYTRA)) {
-                int durability = stack.getMaxDamage() - stack.getDamage();
-                if (durability > bestDurability) {
-                    bestDurability = durability;
+                int currentDurability = stack.getMaxDamage() - stack.getDamage();
+                int maxDurability = stack.getMaxDamage();
+                int durabilityPercentage = (int) ((double) currentDurability / maxDurability * 100);
+                if (durabilityPercentage > bestDurabilityPercentage) {
+                    bestDurabilityPercentage = durabilityPercentage;
                     bestSlot = i;
                 }
             }
@@ -212,7 +216,9 @@ public class ElytraSwap extends Module {
         if (notifySwap.get()) {
             ItemStack targetElytra = mc.player.getInventory().getStack(bestSlot);
             int targetDurability = targetElytra.getMaxDamage() - targetElytra.getDamage();
-            info("Initiating swap to elytra with " + targetDurability + " durability");
+            int targetMaxDurability = targetElytra.getMaxDamage();
+            int targetDurabilityPercentage = (int) ((double) targetDurability / targetMaxDurability * 100);
+            info("Initiating swap to elytra with %d%% durability", targetDurabilityPercentage);
         }
     }
 
@@ -307,7 +313,9 @@ public class ElytraSwap extends Module {
                 
                 if (notifySwap.get()) {
                     int newDurability = newChest.getMaxDamage() - newChest.getDamage();
-                    info("Successfully swapped to elytra with " + newDurability + " durability");
+                    int newMaxDurability = newChest.getMaxDamage();
+                    int newDurabilityPercentage = (int) ((double) newDurability / newMaxDurability * 100);
+                    info("Successfully swapped to elytra with %d%% durability", newDurabilityPercentage);
                 }
                 
                 needsSwap = false;

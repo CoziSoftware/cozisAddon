@@ -5,7 +5,7 @@ A 2b2t Meteor Client utility based addon.
 **<ins>Utility</ins>**
 + AutoLog Plus - A module that disconnects the player according to specific parameters (Based off of [Numby-hack](https://github.com/cqb13/Numby-hack))
 + Auto Shulker - When your inventory is full it places and opens a shulker box and then puts your items in the shulker box
-+ Elytra Swap - WORK IN PROGRESS (DOESN'T WORK YET)
++ Elytra Swap - When your equipped elytra reaches a configurable durability threshold, it swaps to a new one
 + Chat Tracker - Logs chat to a file with optional filtering
 + Player History - Logs player information when they are spotted
 
@@ -31,7 +31,7 @@ A 2b2t Meteor Client utility based addon.
 + AntiSpam - ported from [Asteroide](https://github.com/asteroide-development/Asteroide)
 + Dub Counter - ported from [IKEA](https://github.com/Nooniboi/Public-Ikea) - **I changed this module a bit to allow the HUD element to work properly**
 + GrimAirPlace - ported from [Jeff Mod](https://github.com/miles352/meteor-stashhunting-addon)
-+ Map Exporter - ported from [VexTheIV](https://github.com/Vextheiv/MapArtExporter)
++ Map Exporter - originally from [VexTheIV](https://github.com/Vextheiv)
 
 **<ins>Renders</ins>**
 + PearlOwner - ported from [BepHaxAddon](https://github.com/dekrom/BepHaxAddon)
