@@ -12,6 +12,8 @@ A 2b2t Meteor Client utility based addon.
 **<ins>Renders</ins>**
 + SignRender - Displays sign text above the sign and is visible through walls
 + ChestESP - An ESP for chests/double chests that have shulkers inside them and has a memory of chests in render distance
++ VanityESP - An ESP for vanity items such as banners and item frames
++ Mob Item ESP - An ESP for mobs that spawn with items that they normally wouldn't spawn with
 
 **<ins>Movement</ins>**
 + Elytra Redeploy - Jumps and flies away if you hit the ground with this enabled
