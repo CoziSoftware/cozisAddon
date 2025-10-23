@@ -7,8 +7,14 @@ import meteordevelopment.meteorclient.systems.hud.HudElement;
 import meteordevelopment.meteorclient.systems.hud.HudElementInfo;
 import meteordevelopment.meteorclient.systems.hud.HudRenderer;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
+import meteordevelopment.meteorclient.gui.GuiTheme;
+import meteordevelopment.meteorclient.gui.widgets.WWidget;
+import meteordevelopment.meteorclient.gui.widgets.containers.WVerticalList;
+import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.BlockPos;
 import baritone.api.BaritoneAPI;
+import baritone.api.pathing.goals.GoalBlock;
 
 public class ETA extends HudElement {
     public static final HudElementInfo<ETA> INFO = new HudElementInfo<>(
@@ -20,6 +26,7 @@ public class ETA extends HudElement {
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgColors = settings.createGroup("Colors");
+    private final SettingGroup sgGoal = settings.createGroup("Goal");
 
     private final Setting<Boolean> showTitle = sgGeneral.add(new BoolSetting.Builder()
         .name("show-title")
@@ -110,6 +117,45 @@ public class ETA extends HudElement {
         .build()
     );
 
+    // Goal Configuration Settings
+    private final Setting<Boolean> useCustomGoal = sgGoal.add(new BoolSetting.Builder()
+        .name("use-custom-goal")
+        .description("Use custom goal instead of Baritone goal.")
+        .defaultValue(false)
+        .build()
+    );
+
+    private final Setting<Double> customGoalX = sgGoal.add(new DoubleSetting.Builder()
+        .name("custom-goal-x")
+        .description("Custom goal X coordinate.")
+        .defaultValue(0.0)
+        .visible(() -> useCustomGoal.get())
+        .build()
+    );
+
+    private final Setting<Double> customGoalY = sgGoal.add(new DoubleSetting.Builder()
+        .name("custom-goal-y")
+        .description("Custom goal Y coordinate.")
+        .defaultValue(64.0)
+        .visible(() -> useCustomGoal.get())
+        .build()
+    );
+
+    private final Setting<Double> customGoalZ = sgGoal.add(new DoubleSetting.Builder()
+        .name("custom-goal-z")
+        .description("Custom goal Z coordinate.")
+        .defaultValue(0.0)
+        .visible(() -> useCustomGoal.get())
+        .build()
+    );
+
+    private final Setting<Boolean> showGoalCoordinates = sgGoal.add(new BoolSetting.Builder()
+        .name("show-goal-coordinates")
+        .description("Show goal coordinates in the HUD.")
+        .defaultValue(true)
+        .build()
+    );
+
     // Speed tracking variables
     private Vec3d lastPosition = null;
     private long lastUpdateTime = 0;
@@ -118,6 +164,45 @@ public class ETA extends HudElement {
 
     public ETA() {
         super(INFO);
+    }
+
+    @Override
+    public WWidget getWidget(GuiTheme theme) {
+        WVerticalList list = theme.verticalList();
+
+        // Add buttons for goal management
+        WButton setGoalButton = list.add(theme.button("Set Goal to Current Position")).expandX().widget();
+        setGoalButton.action = () -> {
+            if (MeteorClient.mc.player != null) {
+                Vec3d pos = MeteorClient.mc.player.getPos();
+                customGoalX.set(pos.x);
+                customGoalY.set(pos.y);
+                customGoalZ.set(pos.z);
+                useCustomGoal.set(true);
+            }
+        };
+
+        WButton clearGoalButton = list.add(theme.button("Clear Custom Goal")).expandX().widget();
+        clearGoalButton.action = () -> {
+            useCustomGoal.set(false);
+        };
+
+        WButton setBaritoneGoalButton = list.add(theme.button("Set Baritone Goal")).expandX().widget();
+        setBaritoneGoalButton.action = () -> {
+            if (useCustomGoal.get() && MeteorClient.mc.player != null) {
+                try {
+                    Class.forName("baritone.api.BaritoneAPI");
+                    var baritone = BaritoneAPI.getProvider().getPrimaryBaritone();
+                    baritone.getCustomGoalProcess().setGoalAndPath(
+                        new GoalBlock(new BlockPos(customGoalX.get().intValue(), customGoalY.get().intValue(), customGoalZ.get().intValue()))
+                    );
+                } catch (ClassNotFoundException e) {
+                    // Baritone not available
+                }
+            }
+        };
+
+        return list;
     }
 
     @Override
@@ -138,22 +223,32 @@ public class ETA extends HudElement {
             return;
         }
 
-        // Get Baritone goal
-        var baritone = BaritoneAPI.getProvider().getPrimaryBaritone();
-        var goal = baritone.getCustomGoalProcess().getGoal();
-
-        if (goal == null) {
-            renderNoGoal(renderer);
-            return;
-        }
-
         // Calculate current speed
         updateSpeed();
 
-        // Get goal position
-        Vec3d goalPos = getGoalPosition(goal);
+        Vec3d goalPos = null;
+        boolean usingCustomGoal = false;
+
+        // Check if we should use custom goal
+        if (useCustomGoal.get()) {
+            goalPos = new Vec3d(customGoalX.get(), customGoalY.get(), customGoalZ.get());
+            usingCustomGoal = true;
+        } else {
+            // Get Baritone goal
+            try {
+                var baritone = BaritoneAPI.getProvider().getPrimaryBaritone();
+                var goal = baritone.getCustomGoalProcess().getGoal();
+                
+                if (goal != null) {
+                    goalPos = getGoalPosition(goal);
+                }
+            } catch (Exception e) {
+                // Baritone not available or error occurred
+            }
+        }
+
         if (goalPos == null) {
-            renderNoGoal(renderer);
+            renderNoGoal(renderer, usingCustomGoal);
             return;
         }
 
@@ -165,7 +260,7 @@ public class ETA extends HudElement {
         String etaText = calculateETA(distance);
 
         // Render the HUD
-        renderETA(renderer, distance, etaText);
+        renderETA(renderer, distance, etaText, usingCustomGoal);
     }
 
     private void updateSpeed() {
@@ -231,7 +326,7 @@ public class ETA extends HudElement {
         }
     }
 
-    private void renderETA(HudRenderer renderer, double distance, String etaText) {
+    private void renderETA(HudRenderer renderer, double distance, String etaText, boolean usingCustomGoal) {
         double curX = this.x;
         double curY = this.y;
         double scale = textScale.get();
@@ -247,6 +342,15 @@ public class ETA extends HudElement {
             curY += textHeight + spacing;
             height += textHeight + spacing;
             maxWidth = Math.max(maxWidth, titleWidth);
+        }
+
+        if (showGoalCoordinates.get() && usingCustomGoal) {
+            String goalText = String.format("Goal: %d, %d, %d", customGoalX.get().intValue(), customGoalY.get().intValue(), customGoalZ.get().intValue());
+            double goalWidth = renderer.textWidth(goalText, true, scale);
+            renderer.text(goalText, curX, curY, new SettingColor(255, 165, 0, 255), true, scale); // Orange color
+            curY += textHeight + spacing;
+            height += textHeight + spacing;
+            maxWidth = Math.max(maxWidth, goalWidth);
         }
 
         if (showDistance.get()) {
@@ -290,7 +394,7 @@ public class ETA extends HudElement {
         setSize(maxWidth, height);
     }
 
-    private void renderNoGoal(HudRenderer renderer) {
+    private void renderNoGoal(HudRenderer renderer, boolean usingCustomGoal) {
         double curX = this.x;
         double curY = this.y;
         double scale = textScale.get();
@@ -308,7 +412,12 @@ public class ETA extends HudElement {
             maxWidth = Math.max(maxWidth, titleWidth);
         }
 
-        String noGoalText = "No Baritone goal set";
+        String noGoalText;
+        if (usingCustomGoal) {
+            noGoalText = "Custom goal not set";
+        } else {
+            noGoalText = "No Baritone goal set";
+        }
         double noGoalWidth = renderer.textWidth(noGoalText, true, scale);
         renderer.text(noGoalText, curX, curY, noGoalColor.get(), true, scale);
         height += textHeight;

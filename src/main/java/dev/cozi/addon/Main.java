@@ -18,8 +18,10 @@ import dev.cozi.addon.modules.Hunting.TrailFollower;
 import dev.cozi.addon.modules.Movement.Pitch40Util;
 import dev.cozi.addon.modules.Movement.searcharea.SearchArea;
 import dev.cozi.addon.modules.Render.ChestESP;
+import dev.cozi.addon.modules.Render.ModItemESP;
 import dev.cozi.addon.modules.Render.PearlOwner;
 import dev.cozi.addon.modules.Render.SignRender;
+import dev.cozi.addon.modules.Render.VanityESP;
 import dev.cozi.addon.modules.Utility.AntiSpam;
 import dev.cozi.addon.modules.Utility.AutoLogPlus;
 import dev.cozi.addon.modules.Utility.AutoShulker;
@@ -58,8 +60,10 @@ public class Main extends MeteorAddon {
          Modules.get().add(new Pitch40Util());
          Modules.get().add(new NewChunksPlus());
          Modules.get().add(new ChestESP());
+         Modules.get().add(new ModItemESP());
          Modules.get().add(new PearlOwner());
          Modules.get().add(new SignRender());
+         Modules.get().add(new VanityESP());
          Modules.get().add(new SearchArea());
          Modules.get().add(new AntiSpam());
          Modules.get().add(new AutoLogPlus());
@@ -73,6 +77,7 @@ public class Main extends MeteorAddon {
          Modules.get().add(new ChatTracker());
          Modules.get().add(new MapExporter());
          Modules.get().add(new ElytraSwap());
+         Modules.get().add(new VanityESP());
          
          // Only add modules that require Baritone if Baritone is available
          try {

@@ -275,10 +275,10 @@ public class StashFinderPlus extends Module
                     switch (notificationMode.get())
                     {
                         case Chat -> info("Found stash at (highlight)%s(default), (highlight)%s(default).", chunk.x, chunk.z);
-                        case Toast -> mc.getToastManager().add(new MeteorToast.Builder(title).build());
+                        case Toast -> mc.getToastManager().add(new MeteorToast(Items.CHEST, "Stash Found!", "Found stash at " + chunk.x + ", " + chunk.z));
                         case Both -> {
                             info("Found stash at (highlight)%s(default), (highlight)%s(default).", chunk.x, chunk.z);
-                            mc.getToastManager().add(new MeteorToast.Builder(title).build());
+                            mc.getToastManager().add(new MeteorToast(Items.CHEST, "Stash Found!", "Found stash at " + chunk.x + ", " + chunk.z));
                         }
                     }
                 }
@@ -345,7 +345,7 @@ public class StashFinderPlus extends Module
                     else
                     {
                         String message = "Found stash at " + chunk.x + ", " + chunk.z + ".";
-                        new Thread(() -> sendWebhook(webhookLink.get(), title, message, ping.get() ? discordId.get() : null, mc.player.getGameProfile().getName())).start();
+                        new Thread(() -> sendWebhook(webhookLink.get(), "Stash Found!", message, ping.get() ? discordId.get() : null, mc.player.getGameProfile().getName())).start();
                     }
                 }
 
