@@ -17,6 +17,17 @@ import baritone.api.BaritoneAPI;
 import baritone.api.pathing.goals.GoalBlock;
 
 public class ETA extends HudElement {
+    
+    // Helper class for storing speed data points
+    private static class SpeedDataPoint {
+        final double speed;
+        final long timestamp;
+        
+        SpeedDataPoint(double speed, long timestamp) {
+            this.speed = speed;
+            this.timestamp = timestamp;
+        }
+    }
     public static final HudElementInfo<ETA> INFO = new HudElementInfo<>(
         Main.HUD_GROUP,
         "eta",
@@ -156,11 +167,29 @@ public class ETA extends HudElement {
         .build()
     );
 
+    private final Setting<Boolean> supportElytraMode = sgGoal.add(new BoolSetting.Builder()
+        .name("support-elytra-mode")
+        .description("Support Baritone elytra mode destinations.")
+        .defaultValue(true)
+        .build()
+    );
+
+    private final Setting<Boolean> showElytraIndicator = sgGoal.add(new BoolSetting.Builder()
+        .name("show-elytra-indicator")
+        .description("Show indicator when using elytra mode destination.")
+        .defaultValue(true)
+        .visible(() -> supportElytraMode.get())
+        .build()
+    );
+
     // Speed tracking variables
     private Vec3d lastPosition = null;
     private long lastUpdateTime = 0;
     private double currentSpeed = 0.0;
-    private double smoothedSpeed = 0.0;
+    
+    // 3-second average speed tracking
+    private final java.util.List<SpeedDataPoint> speedHistory = new java.util.ArrayList<>();
+    private static final long AVERAGE_WINDOW_MS = 3000; // 3 seconds
 
     public ETA() {
         super(INFO);
@@ -228,6 +257,7 @@ public class ETA extends HudElement {
 
         Vec3d goalPos = null;
         boolean usingCustomGoal = false;
+        boolean usingElytraMode = false;
 
         // Check if we should use custom goal
         if (useCustomGoal.get()) {
@@ -241,6 +271,22 @@ public class ETA extends HudElement {
                 
                 if (goal != null) {
                     goalPos = getGoalPosition(goal);
+                }
+                
+                // Check for elytra mode destination if no regular goal and elytra support is enabled
+                if (goalPos == null && supportElytraMode.get()) {
+                    try {
+                        var elytraProcess = baritone.getElytraProcess();
+                        if (elytraProcess != null && elytraProcess.isActive()) {
+                            var elytraDestination = elytraProcess.currentDestination();
+                            if (elytraDestination != null) {
+                                goalPos = new Vec3d(elytraDestination.getX(), elytraDestination.getY(), elytraDestination.getZ());
+                                usingElytraMode = true;
+                            }
+                        }
+                    } catch (Exception e) {
+                        // Elytra process not available or error occurred
+                    }
                 }
             } catch (Exception e) {
                 // Baritone not available or error occurred
@@ -260,7 +306,7 @@ public class ETA extends HudElement {
         String etaText = calculateETA(distance);
 
         // Render the HUD
-        renderETA(renderer, distance, etaText, usingCustomGoal);
+        renderETA(renderer, distance, etaText, usingCustomGoal, usingElytraMode);
     }
 
     private void updateSpeed() {
@@ -276,13 +322,20 @@ public class ETA extends HudElement {
                 double distance = currentPos.distanceTo(lastPosition);
                 double newSpeed = distance / timeDiff; // blocks per second
                 
-                // Smooth the speed calculation to reduce jitter
-                if (smoothedSpeed == 0.0) {
-                    smoothedSpeed = newSpeed;
+                // Add the new speed data point to our history
+                speedHistory.add(new SpeedDataPoint(newSpeed, currentTime));
+                
+                // Remove old data points outside the 3-second window
+                long cutoffTime = currentTime - AVERAGE_WINDOW_MS;
+                speedHistory.removeIf(point -> point.timestamp < cutoffTime);
+                
+                // Calculate the average speed over the last 3 seconds
+                if (!speedHistory.isEmpty()) {
+                    double totalSpeed = speedHistory.stream().mapToDouble(point -> point.speed).sum();
+                    currentSpeed = totalSpeed / speedHistory.size();
                 } else {
-                    smoothedSpeed = smoothedSpeed * 0.7 + newSpeed * 0.3; // Exponential smoothing
+                    currentSpeed = newSpeed;
                 }
-                currentSpeed = smoothedSpeed;
             }
             
             // Update tracking variables only after calculating speed
@@ -326,7 +379,7 @@ public class ETA extends HudElement {
         }
     }
 
-    private void renderETA(HudRenderer renderer, double distance, String etaText, boolean usingCustomGoal) {
+    private void renderETA(HudRenderer renderer, double distance, String etaText, boolean usingCustomGoal, boolean usingElytraMode) {
         double curX = this.x;
         double curY = this.y;
         double scale = textScale.get();
@@ -351,6 +404,15 @@ public class ETA extends HudElement {
             curY += textHeight + spacing;
             height += textHeight + spacing;
             maxWidth = Math.max(maxWidth, goalWidth);
+        }
+
+        if (showElytraIndicator.get() && usingElytraMode) {
+            String elytraText = "Elytra Mode Active";
+            double elytraWidth = renderer.textWidth(elytraText, true, scale);
+            renderer.text(elytraText, curX, curY, new SettingColor(0, 255, 255, 255), true, scale); // Cyan color
+            curY += textHeight + spacing;
+            height += textHeight + spacing;
+            maxWidth = Math.max(maxWidth, elytraWidth);
         }
 
         if (showDistance.get()) {
@@ -381,10 +443,11 @@ public class ETA extends HudElement {
         }
 
         if (debugMode.get()) {
-            String debugText = String.format("Debug: LastPos=%s, TimeDiff=%dms, SmoothedSpeed=%.2f", 
+            String debugText = String.format("Debug: LastPos=%s, TimeDiff=%dms, SpeedHistory=%d, AvgSpeed=%.2f", 
                 lastPosition != null ? String.format("%.1f,%.1f,%.1f", lastPosition.x, lastPosition.y, lastPosition.z) : "null",
                 lastUpdateTime != 0 ? (int)(System.currentTimeMillis() - lastUpdateTime) : 0,
-                smoothedSpeed);
+                speedHistory.size(),
+                currentSpeed);
             double debugWidth = renderer.textWidth(debugText, true, scale);
             renderer.text(debugText, curX, curY, new SettingColor(128, 128, 128, 255), true, scale);
             height += textHeight;

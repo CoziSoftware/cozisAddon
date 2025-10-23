@@ -52,7 +52,7 @@ dependencies {
     modImplementation("maven.modrinth:xaeros-minimap:${project.property("xaeros_minimap_version")}")
     // lenni
     modImplementation("net.lenni0451:LambdaEvents:2.4.2")
-    modImplementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
+    modImplementation("com.github.ben-manes.caffeine:caffeine:3.2.2")
     // Baritone - compile only (users should install as a mod jar)
     modCompileOnly("meteordevelopment:baritone:${properties["baritone_version"] as String}")
 }
