@@ -103,6 +103,14 @@ public class StashFinderPlus extends Module
         .defaultValue(false)
         .build()
     );
+
+    private final Setting<Boolean> toggleAutoReconnect = sgGeneral.add(new BoolSetting.Builder()
+        .name("toggle-autoreconnect")
+        .description("Toggles off autoreconnect when disconnecting on stash found.")
+        .defaultValue(true)
+        .visible(disconnectOnStashFound::get)
+        .build()
+    );
     
     private final Setting<Boolean> ignoreTrialChambers = sgGeneral.add(new BoolSetting.Builder()
         .name("ignore-trial-chambers")
@@ -358,9 +366,11 @@ public class StashFinderPlus extends Module
                 }
 
                 if (disconnectOnStashFound.get()) {
-                    meteordevelopment.meteorclient.systems.modules.misc.AutoReconnect autoReconnect = Modules.get().get(meteordevelopment.meteorclient.systems.modules.misc.AutoReconnect.class);
-                    if (autoReconnect.isActive()) {
-                        autoReconnect.toggle();
+                    if (toggleAutoReconnect.get()) {
+                        meteordevelopment.meteorclient.systems.modules.misc.AutoReconnect autoReconnect = Modules.get().get(meteordevelopment.meteorclient.systems.modules.misc.AutoReconnect.class);
+                        if (autoReconnect.isActive()) {
+                            autoReconnect.toggle();
+                        }
                     }
 
                     String prefix = Config.get().prefix.get();
